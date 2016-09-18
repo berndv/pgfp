@@ -31,8 +31,7 @@ import org.sourcepit.lalr.core.grammar.Production;
 import org.sourcepit.lalr.core.grammar.SimpleCoreSyntax;
 import org.sourcepit.lalr.core.grammar.TerminalSymbol;
 
-public class FirstTest {
-
+public class FollowTest {
    private final CoreSyntax syntax = new SimpleCoreSyntax();
 
    @Test
@@ -51,10 +50,10 @@ public class FirstTest {
 
       CoreGraph graph = new CoreGraph(new CoreGrammar(productions));
 
-      DetermineFirstCoreGraphVisitor visitor = new DetermineFirstCoreGraphVisitor();
+      DetermineFollowCoreGraphVisitor visitor = new DetermineFollowCoreGraphVisitor();
       graph.accept(visitor);
 
-      Map<MetaSymbol, Set<TerminalSymbol>> symbolToFirst = visitor.getSymbolToFirst();
+      Map<MetaSymbol, Set<TerminalSymbol>> symbolToFollow = visitor.getSymbolToFollow();
 
       MetaSymbol s = graph.getGrammar().getMetaSymbol("S");
       MetaSymbol a = graph.getGrammar().getMetaSymbol("A");
@@ -63,12 +62,12 @@ public class FirstTest {
       MetaSymbol d = graph.getGrammar().getMetaSymbol("D");
       MetaSymbol e = graph.getGrammar().getMetaSymbol("E");
 
-      assertEquals("[a, b, c]", symbolToFirst.get(s).toString());
-      assertEquals("[a, null]", symbolToFirst.get(a).toString());
-      assertEquals("[b, null]", symbolToFirst.get(b).toString());
-      assertEquals("[c]", symbolToFirst.get(c).toString());
-      assertEquals("[d, null]", symbolToFirst.get(d).toString());
-      assertEquals("[e, null]", symbolToFirst.get(e).toString());
+      assertEquals("[null]", symbolToFollow.get(s).toString());
+      assertEquals("[b, c]", symbolToFollow.get(a).toString());
+      assertEquals("[c]", symbolToFollow.get(b).toString());
+      assertEquals("[d, e, null]", symbolToFollow.get(c).toString());
+      assertEquals("[e, null]", symbolToFollow.get(d).toString());
+      assertEquals("[null]", symbolToFollow.get(e).toString());
    }
 
    @Test
@@ -83,18 +82,18 @@ public class FirstTest {
 
       CoreGraph graph = new CoreGraph(new CoreGrammar(productions));
 
-      DetermineFirstCoreGraphVisitor visitor = new DetermineFirstCoreGraphVisitor();
+      DetermineFollowCoreGraphVisitor visitor = new DetermineFollowCoreGraphVisitor();
       graph.accept(visitor);
 
-      Map<MetaSymbol, Set<TerminalSymbol>> symbolToFirst = visitor.getSymbolToFirst();
+      Map<MetaSymbol, Set<TerminalSymbol>> symbolToFollow = visitor.getSymbolToFollow();
 
       MetaSymbol s = graph.getGrammar().getMetaSymbol("S");
       MetaSymbol b = graph.getGrammar().getMetaSymbol("B");
       MetaSymbol c = graph.getGrammar().getMetaSymbol("C");
 
-      assertEquals("[a, b, c, d]", symbolToFirst.get(s).toString());
-      assertEquals("[a, null]", symbolToFirst.get(b).toString());
-      assertEquals("[c, null]", symbolToFirst.get(c).toString());
+      assertEquals("[null]", symbolToFollow.get(s).toString());
+      assertEquals("[b]", symbolToFollow.get(b).toString());
+      assertEquals("[d]", symbolToFollow.get(c).toString());
    }
 
    @Test
@@ -111,10 +110,10 @@ public class FirstTest {
 
       CoreGraph graph = new CoreGraph(new CoreGrammar(productions));
 
-      DetermineFirstCoreGraphVisitor visitor = new DetermineFirstCoreGraphVisitor();
+      DetermineFollowCoreGraphVisitor visitor = new DetermineFollowCoreGraphVisitor();
       graph.accept(visitor);
 
-      Map<MetaSymbol, Set<TerminalSymbol>> symbolToFirst = visitor.getSymbolToFirst();
+      Map<MetaSymbol, Set<TerminalSymbol>> symbolToFollow = visitor.getSymbolToFollow();
 
       MetaSymbol e = graph.getGrammar().getMetaSymbol("E");
       MetaSymbol ee = graph.getGrammar().getMetaSymbol("EE");
@@ -122,11 +121,11 @@ public class FirstTest {
       MetaSymbol tt = graph.getGrammar().getMetaSymbol("TT");
       MetaSymbol f = graph.getGrammar().getMetaSymbol("F");
 
-      assertEquals("[id, lp]", symbolToFirst.get(e).toString());
-      assertEquals("[plus, null]", symbolToFirst.get(ee).toString());
-      assertEquals("[id, lp]", symbolToFirst.get(t).toString());
-      assertEquals("[star, null]", symbolToFirst.get(tt).toString());
-      assertEquals("[id, lp]", symbolToFirst.get(f).toString());
+      assertEquals("[null, rp]", symbolToFollow.get(e).toString());
+      assertEquals("[null, rp]", symbolToFollow.get(ee).toString());
+      assertEquals("[plus, null, rp]", symbolToFollow.get(t).toString());
+      assertEquals("[plus, null, rp]", symbolToFollow.get(tt).toString());
+      assertEquals("[star, plus, null, rp]", symbolToFollow.get(f).toString());
    }
 
    @Test
@@ -144,22 +143,21 @@ public class FirstTest {
 
       CoreGraph graph = new CoreGraph(new CoreGrammar(productions));
 
-      DetermineFirstCoreGraphVisitor visitor = new DetermineFirstCoreGraphVisitor();
+      DetermineFollowCoreGraphVisitor visitor = new DetermineFollowCoreGraphVisitor();
       graph.accept(visitor);
 
-      Map<MetaSymbol, Set<TerminalSymbol>> symbolToFirst = visitor.getSymbolToFirst();
+      Map<MetaSymbol, Set<TerminalSymbol>> symbolToFollow = visitor.getSymbolToFollow();
 
       MetaSymbol s = graph.getGrammar().getMetaSymbol("S");
       MetaSymbol a = graph.getGrammar().getMetaSymbol("A");
       MetaSymbol b = graph.getGrammar().getMetaSymbol("B");
       MetaSymbol c = graph.getGrammar().getMetaSymbol("C");
 
-      assertEquals("[d, g, h, null, b, a]", symbolToFirst.get(s).toString());
-      assertEquals("[d, g, h, null]", symbolToFirst.get(a).toString());
-      assertEquals("[g, null]", symbolToFirst.get(b).toString());
-      assertEquals("[h, null]", symbolToFirst.get(c).toString());
+      assertEquals("[null]", symbolToFollow.get(s).toString());
+      assertEquals("[h, g, null]", symbolToFollow.get(a).toString());
+      assertEquals("[null, a, h, g]", symbolToFollow.get(b).toString());
+      assertEquals("[g, null, b, h]", symbolToFollow.get(c).toString());
    }
-
 
    @Test
    public void testLeftRecursion() throws Exception {
@@ -170,15 +168,14 @@ public class FirstTest {
 
       CoreGraph graph = new CoreGraph(new CoreGrammar(productions));
 
-      DetermineFirstCoreGraphVisitor visitor = new DetermineFirstCoreGraphVisitor();
+      DetermineFollowCoreGraphVisitor visitor = new DetermineFollowCoreGraphVisitor();
       graph.accept(visitor);
 
-      Map<MetaSymbol, Set<TerminalSymbol>> symbolToFirst = visitor.getSymbolToFirst();
+      Map<MetaSymbol, Set<TerminalSymbol>> symbolToFollow = visitor.getSymbolToFollow();
 
       MetaSymbol s = graph.getGrammar().getMetaSymbol("S");
 
-      assertEquals("[s, f, null]", symbolToFirst.get(s).toString());
+      assertEquals("[null, s]", symbolToFollow.get(s).toString());
    }
-
 
 }

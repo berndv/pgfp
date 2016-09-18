@@ -103,6 +103,15 @@ public class CoreGrammar {
       return metaSymbols;
    }
 
+   public MetaSymbol getMetaSymbol(String str) {
+      for (MetaSymbol symbol : getMetaSymbols()) {
+         if (str.equals(symbol.toString())) {
+            return symbol;
+         }
+      }
+      return null;
+   }
+
    public List<TerminalSymbol> getTerminalSymbols() {
       return terminalSymbols;
    }
