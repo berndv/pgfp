@@ -16,7 +16,9 @@
 
 package org.sourcepit.lalr.core.graph;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +66,7 @@ public class CoreGraphTest {
       assertFalse(graph.getMetaNode(productions.get(1).getLeftSide()).isNullable());
       assertTrue(graph.getMetaNode(productions.get(3).getLeftSide()).isNullable());
       assertFalse(graph.getMetaNode(productions.get(6).getLeftSide()).isNullable());
-      
+
       productions = new ArrayList<>();
       productions.add(syntax.parseProduction("S = A S"));
       productions.add(syntax.parseProduction("A = a"));
@@ -74,6 +76,29 @@ public class CoreGraphTest {
 
       assertTrue(graph.getMetaNode(productions.get(0).getLeftSide()).isNullable());
       assertTrue(graph.getMetaNode(productions.get(1).getLeftSide()).isNullable());
+   }
+
+   @Test
+   public void testFoo() throws Exception {
+      List<Production> productions = new ArrayList<>();
+      productions.add(syntax.parseProduction("S = A"));
+      productions.add(syntax.parseProduction("S = B"));
+      productions.add(syntax.parseProduction("A = a"));
+      productions.add(syntax.parseProduction("A = B"));
+      productions.add(syntax.parseProduction("A = ε"));
+      productions.add(syntax.parseProduction("B = A"));
+      productions.add(syntax.parseProduction("B = b"));
+      productions.add(syntax.parseProduction("B = ε"));
+
+      CoreGraph graph = new CoreGraph(new CoreGrammar(productions));
+
+      MetaNode s = graph.getMetaNode("S");
+      MetaNode a= graph.getMetaNode("A");
+      MetaNode b = graph.getMetaNode("B");
+      
+      assertTrue(s.isNullable());
+      assertTrue(a.isNullable());
+      assertTrue(b.isNullable());
    }
 
    @Test

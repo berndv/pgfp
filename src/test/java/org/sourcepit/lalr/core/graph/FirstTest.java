@@ -17,6 +17,7 @@
 package org.sourcepit.lalr.core.graph;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -159,7 +160,54 @@ public class FirstTest {
       assertEquals("[g, null]", symbolToFirst.get(b).toString());
       assertEquals("[h, null]", symbolToFirst.get(c).toString());
    }
+   
+   @Test
+   public void testExample5() throws Exception {
+      List<Production> productions = new ArrayList<>();
+      productions.add(syntax.parseProduction("S = a A B b"));
+      productions.add(syntax.parseProduction("A = c"));
+      productions.add(syntax.parseProduction("A = ε"));
+      productions.add(syntax.parseProduction("B = d"));
+      productions.add(syntax.parseProduction("B = ε"));
 
+      CoreGraph graph = new CoreGraph(new CoreGrammar(productions));
+
+      DetermineFirstCoreGraphVisitor visitor = new DetermineFirstCoreGraphVisitor();
+      graph.accept(visitor);
+
+      Map<MetaSymbol, Set<TerminalSymbol>> symbolToFirst = visitor.getSymbolToFirst();
+
+      MetaSymbol s = graph.getGrammar().getMetaSymbol("S");
+      MetaSymbol a = graph.getGrammar().getMetaSymbol("A");
+      MetaSymbol b = graph.getGrammar().getMetaSymbol("B");
+
+      assertEquals("[a]", symbolToFirst.get(s).toString());
+      assertEquals("[c, null]", symbolToFirst.get(a).toString());
+      assertEquals("[d, null]", symbolToFirst.get(b).toString());
+   }
+
+   @Test
+   public void testRecursiveConflict() throws Exception {
+      List<Production> productions = new ArrayList<>();
+      productions.add(syntax.parseProduction("S = A"));
+      productions.add(syntax.parseProduction("S = B"));
+      productions.add(syntax.parseProduction("A = B"));
+      productions.add(syntax.parseProduction("A = a"));
+      productions.add(syntax.parseProduction("A = ε"));
+      productions.add(syntax.parseProduction("B = A"));
+      productions.add(syntax.parseProduction("B = b"));
+      productions.add(syntax.parseProduction("B = ε"));
+
+      CoreGraph graph = new CoreGraph(new CoreGrammar(productions));
+
+      DetermineFirstCoreGraphVisitor visitor = new DetermineFirstCoreGraphVisitor();
+      try {
+         graph.accept(visitor);
+         fail();
+      }
+      catch (IllegalStateException e) {
+      }
+   }
 
    @Test
    public void testLeftRecursion() throws Exception {

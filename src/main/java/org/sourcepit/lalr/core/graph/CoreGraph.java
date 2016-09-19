@@ -84,6 +84,11 @@ public class CoreGraph {
       return grammar;
    }
 
+   public MetaNode getMetaNode(String symbol) {
+      final MetaSymbol metaSymbol = getGrammar().getMetaSymbol(symbol);
+      return metaSymbol == null ? null : getMetaNode(metaSymbol);
+   }
+
    public MetaNode getMetaNode(MetaSymbol symbol) {
       return metaNodes.get(symbol);
    }

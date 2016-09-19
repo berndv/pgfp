@@ -17,6 +17,7 @@
 package org.sourcepit.lalr.core.graph;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -157,6 +158,55 @@ public class FollowTest {
       assertEquals("[h, g, null]", symbolToFollow.get(a).toString());
       assertEquals("[null, a, h, g]", symbolToFollow.get(b).toString());
       assertEquals("[g, null, b, h]", symbolToFollow.get(c).toString());
+   }
+
+   @Test
+   public void testExample5() throws Exception {
+      List<Production> productions = new ArrayList<>();
+      productions.add(syntax.parseProduction("S = a A B b"));
+      productions.add(syntax.parseProduction("A = c"));
+      productions.add(syntax.parseProduction("A = ε"));
+      productions.add(syntax.parseProduction("B = d"));
+      productions.add(syntax.parseProduction("B = ε"));
+
+      CoreGraph graph = new CoreGraph(new CoreGrammar(productions));
+
+      DetermineFollowCoreGraphVisitor visitor = new DetermineFollowCoreGraphVisitor();
+      graph.accept(visitor);
+
+      Map<MetaSymbol, Set<TerminalSymbol>> symbolToFollow = visitor.getSymbolToFollow();
+
+      MetaSymbol s = graph.getGrammar().getMetaSymbol("S");
+      MetaSymbol a = graph.getGrammar().getMetaSymbol("A");
+      MetaSymbol b = graph.getGrammar().getMetaSymbol("B");
+
+      assertEquals("[null]", symbolToFollow.get(s).toString());
+      assertEquals("[d, b]", symbolToFollow.get(a).toString());
+      assertEquals("[b]", symbolToFollow.get(b).toString());
+   }
+
+   @Test
+   public void testRecursiveConflict() throws Exception {
+      List<Production> productions = new ArrayList<>();
+      productions.add(syntax.parseProduction("S = A c"));
+      productions.add(syntax.parseProduction("S = B f"));
+      productions.add(syntax.parseProduction("A = B"));
+      productions.add(syntax.parseProduction("A = a"));
+      productions.add(syntax.parseProduction("A = ε"));
+      productions.add(syntax.parseProduction("B = A"));
+      productions.add(syntax.parseProduction("B = b"));
+      productions.add(syntax.parseProduction("B = ε"));
+
+      CoreGraph graph = new CoreGraph(new CoreGrammar(productions));
+
+      DetermineFollowCoreGraphVisitor visitor = new DetermineFollowCoreGraphVisitor();
+
+      try {
+         graph.accept(visitor);
+         fail();
+      }
+      catch (IllegalStateException e) {
+      }
    }
 
    @Test
