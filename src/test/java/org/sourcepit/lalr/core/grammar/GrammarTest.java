@@ -26,7 +26,7 @@ import org.junit.Test;
 
 public class GrammarTest {
 
-   private final CoreSyntax syntax = new SimpleCoreSyntax();
+   private final Syntax syntax = new SimpleSyntax();
 
    @Test
    public void test() throws Exception {

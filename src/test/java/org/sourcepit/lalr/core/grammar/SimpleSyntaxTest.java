@@ -28,12 +28,12 @@ import java.util.function.Predicate;
 
 import org.junit.Test;
 
-public class SimpleCoreSyntaxTest {
+public class SimpleSyntaxTest {
 
 
    @Test
    public void testParseProductionEpsilon() {
-      CoreSyntax syntax = new SimpleCoreSyntax();
+      Syntax syntax = new SimpleSyntax();
       Production p = syntax.parseProduction("S = \u03B5");
       assertTrue(p.isEmpty());
       assertEquals("S = ε", p.toString());
@@ -48,7 +48,7 @@ public class SimpleCoreSyntaxTest {
 
    @Test
    public void testParseProductionEmptyString() {
-      CoreSyntax syntax = new SimpleCoreSyntax();
+      Syntax syntax = new SimpleSyntax();
       try {
          syntax.parseProduction("");
          fail();
@@ -60,7 +60,7 @@ public class SimpleCoreSyntaxTest {
 
    @Test
    public void testParseProductionNoAssignment() {
-      CoreSyntax syntax = new SimpleCoreSyntax();
+      Syntax syntax = new SimpleSyntax();
       try {
          syntax.parseProduction("S");
          fail();
@@ -80,7 +80,7 @@ public class SimpleCoreSyntaxTest {
 
    @Test
    public void testParseProductionNoRightHandSide() {
-      CoreSyntax syntax = new SimpleCoreSyntax();
+      Syntax syntax = new SimpleSyntax();
       try {
          syntax.parseProduction("S = ");
          fail();
@@ -92,7 +92,7 @@ public class SimpleCoreSyntaxTest {
 
    @Test
    public void testParseProductionIllegalRightHandSide() {
-      CoreSyntax syntax = new SimpleCoreSyntax();
+      Syntax syntax = new SimpleSyntax();
       try {
          syntax.parseProduction(".");
          fail();
@@ -112,7 +112,7 @@ public class SimpleCoreSyntaxTest {
 
    @Test
    public void testParseProduction() {
-      CoreSyntax syntax = new SimpleCoreSyntax();
+      Syntax syntax = new SimpleSyntax();
       Production p = syntax.parseProduction("S = a b C");
 
       assertEquals(syntax.parseSymbol("S"), p.getLeftSide());
@@ -128,7 +128,7 @@ public class SimpleCoreSyntaxTest {
 
    @Test
    public void testFromString() {
-      final CoreSyntax syntax = new SimpleCoreSyntax();
+      final Syntax syntax = new SimpleSyntax();
 
       AbstractSymbol s = syntax.parseSymbol("s");
       assertEquals(Terminal.class, s.getClass());
@@ -165,64 +165,64 @@ public class SimpleCoreSyntaxTest {
 
    @Test
    public void testValidateSymbolName() throws Exception {
-      SimpleCoreSyntax.validateSymbolName(VARIABLE, "F");
-      SimpleCoreSyntax.validateSymbolName(VARIABLE, "Foo");
-      SimpleCoreSyntax.validateSymbolName(VARIABLE, "FoO");
+      SimpleSyntax.validateSymbolName(VARIABLE, "F");
+      SimpleSyntax.validateSymbolName(VARIABLE, "Foo");
+      SimpleSyntax.validateSymbolName(VARIABLE, "FoO");
       try {
-         SimpleCoreSyntax.validateSymbolName(VARIABLE, "ε");
+         SimpleSyntax.validateSymbolName(VARIABLE, "ε");
          fail();
       }
       catch (IllegalArgumentException e) {
          assertEquals("'ε' is reserved and cannot be used as symbol name", e.getMessage());
       }
       try {
-         SimpleCoreSyntax.validateSymbolName(VARIABLE, "f");
+         SimpleSyntax.validateSymbolName(VARIABLE, "f");
          fail();
       }
       catch (IllegalArgumentException e) {
          assertEquals("First char of variable 'f' must be upper case", e.getMessage());
       }
       try {
-         SimpleCoreSyntax.validateSymbolName(VARIABLE, "$");
+         SimpleSyntax.validateSymbolName(VARIABLE, "$");
          fail();
       }
       catch (IllegalArgumentException e) {
          assertEquals("First char of symbol '$' must be a valid unicode identifier start char", e.getMessage());
       }
       try {
-         SimpleCoreSyntax.validateSymbolName(VARIABLE, "Foo$");
+         SimpleSyntax.validateSymbolName(VARIABLE, "Foo$");
          fail();
       }
       catch (IllegalArgumentException e) {
          assertEquals("Symbol 'Foo$' contains invlaid char '$'", e.getMessage());
       }
 
-      SimpleCoreSyntax.validateSymbolName(TERMINAL, "f");
-      SimpleCoreSyntax.validateSymbolName(TERMINAL, "foo");
-      SimpleCoreSyntax.validateSymbolName(TERMINAL, "foO");
+      SimpleSyntax.validateSymbolName(TERMINAL, "f");
+      SimpleSyntax.validateSymbolName(TERMINAL, "foo");
+      SimpleSyntax.validateSymbolName(TERMINAL, "foO");
       try {
-         SimpleCoreSyntax.validateSymbolName(TERMINAL, "ε");
+         SimpleSyntax.validateSymbolName(TERMINAL, "ε");
          fail();
       }
       catch (IllegalArgumentException e) {
          assertEquals("'ε' is reserved and cannot be used as symbol name", e.getMessage());
       }
       try {
-         SimpleCoreSyntax.validateSymbolName(TERMINAL, "F");
+         SimpleSyntax.validateSymbolName(TERMINAL, "F");
          fail();
       }
       catch (IllegalArgumentException e) {
          assertEquals("First char of terminal symbol 'F' must be lower case", e.getMessage());
       }
       try {
-         SimpleCoreSyntax.validateSymbolName(TERMINAL, "$");
+         SimpleSyntax.validateSymbolName(TERMINAL, "$");
          fail();
       }
       catch (IllegalArgumentException e) {
          assertEquals("First char of symbol '$' must be a valid unicode identifier start char", e.getMessage());
       }
       try {
-         SimpleCoreSyntax.validateSymbolName(TERMINAL, "foo$");
+         SimpleSyntax.validateSymbolName(TERMINAL, "foo$");
          fail();
       }
       catch (IllegalArgumentException e) {
@@ -235,9 +235,9 @@ public class SimpleCoreSyntaxTest {
       int codePoint = Character.toCodePoint('\uD801', '\uDC00');
       String str = new String(Character.toChars(codePoint));
       assertTrue(Character.isUnicodeIdentifierStart(codePoint) && Character.isUpperCase(codePoint));
-      SimpleCoreSyntax.validateSymbolName(VARIABLE, str);
+      SimpleSyntax.validateSymbolName(VARIABLE, str);
       try {
-         SimpleCoreSyntax.validateSymbolName(TERMINAL, str);
+         SimpleSyntax.validateSymbolName(TERMINAL, str);
          fail();
       }
       catch (IllegalArgumentException e) {
@@ -248,46 +248,46 @@ public class SimpleCoreSyntaxTest {
       str = new String(Character.toChars(codePoint));
       assertTrue(Character.isUnicodeIdentifierStart(codePoint) && Character.isLowerCase(codePoint));
       try {
-         SimpleCoreSyntax.validateSymbolName(VARIABLE, str);
+         SimpleSyntax.validateSymbolName(VARIABLE, str);
          fail();
       }
       catch (IllegalArgumentException e) {
          assertEquals("First char of variable '𐐨' must be upper case", e.getMessage());
       }
-      SimpleCoreSyntax.validateSymbolName(TERMINAL, str);
+      SimpleSyntax.validateSymbolName(TERMINAL, str);
 
       codePoint = Character.toCodePoint('\uD800', '\uDDFD');
       str = new String(Character.toChars(codePoint));
       assertTrue(!Character.isUnicodeIdentifierStart(codePoint) && Character.isUnicodeIdentifierPart(codePoint));
       try {
-         SimpleCoreSyntax.validateSymbolName(VARIABLE, str);
+         SimpleSyntax.validateSymbolName(VARIABLE, str);
          fail();
       }
       catch (IllegalArgumentException e) {
          assertEquals("First char of symbol '𐇽' must be a valid unicode identifier start char", e.getMessage());
       }
       try {
-         SimpleCoreSyntax.validateSymbolName(TERMINAL, str);
+         SimpleSyntax.validateSymbolName(TERMINAL, str);
          fail();
       }
       catch (IllegalArgumentException e) {
          assertEquals("First char of symbol '𐇽' must be a valid unicode identifier start char", e.getMessage());
       }
-      SimpleCoreSyntax.validateSymbolName(VARIABLE, "S" + str);
-      SimpleCoreSyntax.validateSymbolName(TERMINAL, "s" + str);
+      SimpleSyntax.validateSymbolName(VARIABLE, "S" + str);
+      SimpleSyntax.validateSymbolName(TERMINAL, "s" + str);
 
       codePoint = Character.toCodePoint('\uD800', '\uDC0C');
       str = new String(Character.toChars(codePoint));
       assertTrue(!Character.isUnicodeIdentifierStart(codePoint) && !Character.isUnicodeIdentifierPart(codePoint));
       try {
-         SimpleCoreSyntax.validateSymbolName(VARIABLE, "S" + str);
+         SimpleSyntax.validateSymbolName(VARIABLE, "S" + str);
          fail();
       }
       catch (IllegalArgumentException e) {
          assertEquals("Symbol 'S𐀌' contains invlaid char '𐀌'", e.getMessage());
       }
       try {
-         SimpleCoreSyntax.validateSymbolName(TERMINAL, "s" + str);
+         SimpleSyntax.validateSymbolName(TERMINAL, "s" + str);
          fail();
       }
       catch (IllegalArgumentException e) {

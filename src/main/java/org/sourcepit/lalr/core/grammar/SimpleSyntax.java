@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.PrimitiveIterator.OfInt;
 import java.util.StringTokenizer;
 
-public class SimpleCoreSyntax implements CoreSyntax {
+public class SimpleSyntax implements Syntax {
 
    @Override
    public Variable createVariable(String name) throws IllegalArgumentException {
@@ -130,7 +130,7 @@ public class SimpleCoreSyntax implements CoreSyntax {
       return str.toString();
    }
 
-   private static Variable leftSide(CoreSyntax syntax, StringTokenizer tokenizer) {
+   private static Variable leftSide(Syntax syntax, StringTokenizer tokenizer) {
       isTrue(tokenizer.hasMoreElements(), "Variable expected on the left-hand side");
       String t = tokenizer.nextToken();
       AbstractSymbol symbol = syntax.parseSymbol(t);
@@ -144,7 +144,7 @@ public class SimpleCoreSyntax implements CoreSyntax {
       isTrue(t.equals("="), "Assignment expected");
    }
 
-   private static List<AbstractSymbol> rightSide(CoreSyntax syntax, StringTokenizer tokenizer) {
+   private static List<AbstractSymbol> rightSide(Syntax syntax, StringTokenizer tokenizer) {
       isTrue(tokenizer.hasMoreElements(), "Symbol expected on the right-hand side");
       List<AbstractSymbol> symbols = new ArrayList<>();
       String t = tokenizer.nextToken();

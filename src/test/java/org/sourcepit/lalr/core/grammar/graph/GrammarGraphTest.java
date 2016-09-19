@@ -25,15 +25,15 @@ import java.util.List;
 
 import org.junit.Test;
 import org.sourcepit.lalr.core.grammar.Grammar;
-import org.sourcepit.lalr.core.grammar.CoreSyntax;
+import org.sourcepit.lalr.core.grammar.Syntax;
 import org.sourcepit.lalr.core.grammar.Production;
-import org.sourcepit.lalr.core.grammar.SimpleCoreSyntax;
+import org.sourcepit.lalr.core.grammar.SimpleSyntax;
 import org.sourcepit.lalr.core.grammar.graph.AbstractGrammarGraphVisitor;
 import org.sourcepit.lalr.core.grammar.graph.GrammarGraph;
 import org.sourcepit.lalr.core.grammar.graph.VariableNode;
 
 public class GrammarGraphTest {
-   private final CoreSyntax syntax = new SimpleCoreSyntax();
+   private final Syntax syntax = new SimpleSyntax();
 
    @Test
    public void testNullable() {

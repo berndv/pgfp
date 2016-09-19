@@ -17,7 +17,7 @@
 package org.sourcepit.lalr.core.grammar;
 
 
-public interface CoreSyntax {
+public interface Syntax {
 
    AbstractSymbol createSymbol(SymbolType type, String name) throws IllegalArgumentException;
 
