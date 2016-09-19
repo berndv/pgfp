@@ -16,12 +16,12 @@
 
 package org.sourcepit.lalr.core.grammar;
 
-import static org.sourcepit.lalr.core.grammar.SymbolType.META;
+import static org.sourcepit.lalr.core.grammar.SymbolType.VARIABLE;
 
-public final class MetaSymbol extends AbstractSymbol {
+public final class Variable extends AbstractSymbol {
 
-   public MetaSymbol(String toString) {
-      super(META, toString);
+   public Variable(String toString) {
+      super(VARIABLE, toString);
    }
 
 }

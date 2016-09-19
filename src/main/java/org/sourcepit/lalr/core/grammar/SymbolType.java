@@ -16,5 +16,5 @@
 
 package org.sourcepit.lalr.core.grammar;
 public enum SymbolType {
-   META, TERMINAL
+   VARIABLE, TERMINAL
 }

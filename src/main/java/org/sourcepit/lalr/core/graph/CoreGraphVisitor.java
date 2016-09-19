@@ -22,17 +22,17 @@ public interface CoreGraphVisitor {
 
    void startGraph(CoreGraph coreGraph);
 
-   boolean startMetaNode(MetaNode metaNode);
+   boolean startVariableNode(VariableNode variableNode);
 
-   void startAlternative(Alternative alternative);
+   void startProductionNode(ProductionNode productionNode);
 
    void visitRecursion(List<Object> trace);
 
    void visitTerminalNode(TerminalNode symbolNode);
 
-   void endAlternative(Alternative alternative);
+   void endProductionNode(ProductionNode productionNode);
 
-   void endMetaNode(MetaNode metaNode);
+   void endVariableNode(VariableNode variableNode);
 
    void endGraph(CoreGraph coreGraph);
 

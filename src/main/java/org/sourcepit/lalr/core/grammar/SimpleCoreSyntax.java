@@ -20,8 +20,8 @@ import static java.lang.Character.isLowerCase;
 import static java.lang.Character.isUpperCase;
 import static java.lang.String.format;
 import static org.apache.commons.lang.Validate.notEmpty;
-import static org.sourcepit.lalr.core.grammar.SymbolType.META;
 import static org.sourcepit.lalr.core.grammar.SymbolType.TERMINAL;
+import static org.sourcepit.lalr.core.grammar.SymbolType.VARIABLE;
 import static org.sourcepit.lalr.core.grammar.Validate.isTrue;
 
 import java.util.ArrayList;
@@ -32,23 +32,23 @@ import java.util.StringTokenizer;
 public class SimpleCoreSyntax implements CoreSyntax {
 
    @Override
-   public MetaSymbol createMetaSymbol(String name) throws IllegalArgumentException {
-      return (MetaSymbol) createSymbol(META, name);
+   public Variable createVariable(String name) throws IllegalArgumentException {
+      return (Variable) createSymbol(VARIABLE, name);
    }
 
    @Override
-   public TerminalSymbol createTerminalSymbol(String name) throws IllegalArgumentException {
-      return (TerminalSymbol) createSymbol(TERMINAL, name);
+   public Terminal createTerminal(String name) throws IllegalArgumentException {
+      return (Terminal) createSymbol(TERMINAL, name);
    }
 
    @Override
    public AbstractSymbol createSymbol(SymbolType type, String name) throws IllegalArgumentException {
       validateSymbolName(type, name);
       switch (type) {
-         case META :
-            return new MetaSymbol(name);
+         case VARIABLE :
+            return new Variable(name);
          case TERMINAL :
-            return new TerminalSymbol(name);
+            return new Terminal(name);
          default :
             throw new IllegalStateException();
       }
@@ -61,7 +61,7 @@ public class SimpleCoreSyntax implements CoreSyntax {
       validateFirstCodePoint(str, firstCP);
       final SymbolType type;
       if (Character.isUpperCase(firstCP)) {
-         type = META;
+         type = VARIABLE;
       }
       else if (Character.isLowerCase(firstCP)) {
          type = TERMINAL;
@@ -83,8 +83,8 @@ public class SimpleCoreSyntax implements CoreSyntax {
       validateFirstCodePoint(name, firstCP);
 
       switch (type) {
-         case META :
-            isTrue(isUpperCase(firstCP), "First char of meta symbol '%s' must be upper case", name);
+         case VARIABLE :
+            isTrue(isUpperCase(firstCP), "First char of variable '%s' must be upper case", name);
             break;
          case TERMINAL :
             isTrue(isLowerCase(firstCP), "First char of terminal symbol '%s' must be lower case", name);
@@ -108,13 +108,13 @@ public class SimpleCoreSyntax implements CoreSyntax {
    @Override
    public Production parseProduction(String str) throws IllegalArgumentException {
       final StringTokenizer tokenizer = new StringTokenizer(str, " \t\r\n\u000C");
-      final MetaSymbol leftSide = leftSide(this, tokenizer);
+      final Variable leftSide = leftSide(this, tokenizer);
       assignment(tokenizer);
       final List<AbstractSymbol> rightSide = rightSide(this, tokenizer);
       return new Production(leftSide, rightSide, toString(leftSide, rightSide));
    }
 
-   private String toString(MetaSymbol leftSide, List<AbstractSymbol> rightSide) {
+   private String toString(Variable leftSide, List<AbstractSymbol> rightSide) {
       final StringBuilder str = new StringBuilder();
       str.append(leftSide);
       str.append(" =");
@@ -130,12 +130,12 @@ public class SimpleCoreSyntax implements CoreSyntax {
       return str.toString();
    }
 
-   private static MetaSymbol leftSide(CoreSyntax syntax, StringTokenizer tokenizer) {
-      isTrue(tokenizer.hasMoreElements(), "Meta symbol expected on the left-hand side");
+   private static Variable leftSide(CoreSyntax syntax, StringTokenizer tokenizer) {
+      isTrue(tokenizer.hasMoreElements(), "Variable expected on the left-hand side");
       String t = tokenizer.nextToken();
       AbstractSymbol symbol = syntax.parseSymbol(t);
-      isTrue(symbol.getType() == SymbolType.META, "Meta symbols must start with a upper case charachter");
-      return (MetaSymbol) symbol;
+      isTrue(symbol.getType() == SymbolType.VARIABLE, "Variables must start with a upper case charachter");
+      return (Variable) symbol;
    }
 
    private static void assignment(StringTokenizer tokenizer) {

@@ -24,7 +24,7 @@ import org.sourcepit.lalr.core.grammar.AbstractSymbol;
 public abstract class AbstractSymbolNode {
    protected final AbstractSymbol symbol;
 
-   protected final List<Alternative> referencedBy = new ArrayList<>();
+   protected final List<ProductionNode> referencedBy = new ArrayList<>();
 
    public AbstractSymbolNode(AbstractSymbol symbol) {
       this.symbol = symbol;
@@ -34,7 +34,7 @@ public abstract class AbstractSymbolNode {
       return symbol;
    }
 
-   public List<Alternative> getReferencedBy() {
+   public List<ProductionNode> getReferencedBy() {
       return referencedBy;
    }
 

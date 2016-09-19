@@ -46,10 +46,10 @@ public class CoreGraphTest {
 
       CoreGraph graph = new CoreGraph(new CoreGrammar(productions));
 
-      assertFalse(graph.getMetaNode(productions.get(0).getLeftSide()).isNullable());
-      assertTrue(graph.getMetaNode(productions.get(1).getLeftSide()).isNullable());
-      assertTrue(graph.getMetaNode(productions.get(3).getLeftSide()).isNullable());
-      assertTrue(graph.getMetaNode(productions.get(6).getLeftSide()).isNullable());
+      assertFalse(graph.getVariableNode(productions.get(0).getLeftSide()).isNullable());
+      assertTrue(graph.getVariableNode(productions.get(1).getLeftSide()).isNullable());
+      assertTrue(graph.getVariableNode(productions.get(3).getLeftSide()).isNullable());
+      assertTrue(graph.getVariableNode(productions.get(6).getLeftSide()).isNullable());
 
       productions = new ArrayList<>();
       productions.add(syntax.parseProduction("S = a B"));
@@ -62,10 +62,10 @@ public class CoreGraphTest {
 
       graph = new CoreGraph(new CoreGrammar(productions));
 
-      assertFalse(graph.getMetaNode(productions.get(0).getLeftSide()).isNullable());
-      assertFalse(graph.getMetaNode(productions.get(1).getLeftSide()).isNullable());
-      assertTrue(graph.getMetaNode(productions.get(3).getLeftSide()).isNullable());
-      assertFalse(graph.getMetaNode(productions.get(6).getLeftSide()).isNullable());
+      assertFalse(graph.getVariableNode(productions.get(0).getLeftSide()).isNullable());
+      assertFalse(graph.getVariableNode(productions.get(1).getLeftSide()).isNullable());
+      assertTrue(graph.getVariableNode(productions.get(3).getLeftSide()).isNullable());
+      assertFalse(graph.getVariableNode(productions.get(6).getLeftSide()).isNullable());
 
       productions = new ArrayList<>();
       productions.add(syntax.parseProduction("S = A S"));
@@ -74,8 +74,8 @@ public class CoreGraphTest {
 
       graph = new CoreGraph(new CoreGrammar(productions));
 
-      assertTrue(graph.getMetaNode(productions.get(0).getLeftSide()).isNullable());
-      assertTrue(graph.getMetaNode(productions.get(1).getLeftSide()).isNullable());
+      assertTrue(graph.getVariableNode(productions.get(0).getLeftSide()).isNullable());
+      assertTrue(graph.getVariableNode(productions.get(1).getLeftSide()).isNullable());
    }
 
    @Test
@@ -92,10 +92,10 @@ public class CoreGraphTest {
 
       CoreGraph graph = new CoreGraph(new CoreGrammar(productions));
 
-      MetaNode s = graph.getMetaNode("S");
-      MetaNode a= graph.getMetaNode("A");
-      MetaNode b = graph.getMetaNode("B");
-      
+      VariableNode s = graph.getVariableNode("S");
+      VariableNode a = graph.getVariableNode("A");
+      VariableNode b = graph.getVariableNode("B");
+
       assertTrue(s.isNullable());
       assertTrue(a.isNullable());
       assertTrue(b.isNullable());
@@ -107,7 +107,7 @@ public class CoreGraphTest {
       productions.add(syntax.parseProduction("S = E"));
       productions.add(syntax.parseProduction("E = e S"));
 
-      List<MetaNode> visited = new ArrayList<>();
+      List<VariableNode> visited = new ArrayList<>();
       List<List<Object>> recursions = new ArrayList<>();
 
       CoreGraph graph = new CoreGraph(new CoreGrammar(productions));
@@ -118,8 +118,8 @@ public class CoreGraphTest {
          }
 
          @Override
-         protected void onEndMetaNode(MetaNode metaNode) {
-            visited.add(metaNode);
+         protected void onEndVariableNode(VariableNode variableNode) {
+            visited.add(variableNode);
          }
       });
 

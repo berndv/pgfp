@@ -18,9 +18,9 @@ package org.sourcepit.lalr.core.grammar;
 
 import static org.sourcepit.lalr.core.grammar.SymbolType.TERMINAL;
 
-public final class TerminalSymbol extends AbstractSymbol {
+public final class Terminal extends AbstractSymbol {
 
-   public TerminalSymbol(String toString) {
+   public Terminal(String toString) {
       super(TERMINAL, toString);
    }
 }

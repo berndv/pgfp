@@ -19,46 +19,39 @@ package org.sourcepit.lalr.core.graph;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sourcepit.lalr.core.grammar.MetaSymbol;
+public class ProductionNode {
 
-public class MetaNode extends AbstractSymbolNode {
+   private VariableNode parent;
 
-   private boolean nullable = false;
+   private final List<AbstractSymbolNode> rightSideNodes = new ArrayList<>();
 
-   private final List<Alternative> alternatives = new ArrayList<>();
-
-   public MetaNode(MetaSymbol symbol) {
-      super(symbol);
+   public void setParent(VariableNode parent) {
+      this.parent = parent;
    }
 
-   @Override
-   public MetaSymbol getSymbol() {
-      return (MetaSymbol) super.getSymbol();
+   public VariableNode getLeftSideNode() {
+      return parent;
    }
 
-   public List<Alternative> getAlternatives() {
-      return alternatives;
-   }
-
-   public void setNullable(boolean nullable) {
-      this.nullable = nullable;
-   }
-
-   public boolean isNullable() {
-      return nullable;
+   public List<AbstractSymbolNode> getRightSideNodes() {
+      return rightSideNodes;
    }
 
    @Override
    public String toString() {
+      return toString(true);
+   }
+
+   public String toString(boolean full) {
       StringBuilder builder = new StringBuilder();
-      builder.append("MetaNode [");
-      if (symbol != null) {
-         builder.append("symbol=");
-         builder.append(symbol);
+      builder.append("ProductionNode [");
+      if (parent != null) {
+         builder.append("parent=");
+         builder.append(parent.getSymbol());
          builder.append(", ");
+         builder.append("index=");
+         builder.append(parent.getProductionNodes().indexOf(this));
       }
-      builder.append("nullable=");
-      builder.append(nullable);
       builder.append("]");
       return builder.toString();
    }

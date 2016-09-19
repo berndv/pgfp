@@ -18,15 +18,15 @@ package org.sourcepit.lalr.core.graph;
 
 public class DetermineNullableCoreGraphVisitor extends AbstractCoreGraphVisitor {
    @Override
-   public void endAlternative(Alternative alternative) {
-      final MetaNode parent = alternative.getParent();
+   public void endProductionNode(ProductionNode productionNode) {
+      final VariableNode parent = productionNode.getLeftSideNode();
       if (!parent.isNullable()) {
          boolean nullable = true;
-         for (AbstractSymbolNode symbolNode : alternative.getSymbolNodes()) {
+         for (AbstractSymbolNode symbolNode : productionNode.getRightSideNodes()) {
             if (symbolNode.equals(parent)) {
                continue;
             }
-            if (symbolNode instanceof TerminalNode || !((MetaNode) symbolNode).isNullable()) {
+            if (symbolNode instanceof TerminalNode || !((VariableNode) symbolNode).isNullable()) {
                nullable = false;
                break;
             }

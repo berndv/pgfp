@@ -21,9 +21,9 @@ public interface CoreSyntax {
 
    AbstractSymbol createSymbol(SymbolType type, String name) throws IllegalArgumentException;
 
-   MetaSymbol createMetaSymbol(String name) throws IllegalArgumentException;
-   
-   TerminalSymbol createTerminalSymbol(String name) throws IllegalArgumentException;
+   Variable createVariable(String name) throws IllegalArgumentException;
+
+   Terminal createTerminal(String name) throws IllegalArgumentException;
 
    AbstractSymbol parseSymbol(String str) throws IllegalArgumentException;
 

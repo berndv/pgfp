@@ -24,13 +24,13 @@ import static org.apache.commons.lang.Validate.notNull;
 import java.util.List;
 
 public final class Production {
-   private final MetaSymbol leftSide;
+   private final Variable leftSide;
 
    private final List<AbstractSymbol> rightSide;
 
    private final String toString;
 
-   public Production(MetaSymbol leftSide, List<AbstractSymbol> rightSide, String toString) {
+   public Production(Variable leftSide, List<AbstractSymbol> rightSide, String toString) {
       notNull(leftSide);
       noNullElements(rightSide);
       notEmpty(toString);
@@ -39,7 +39,7 @@ public final class Production {
       this.toString = toString;
    }
 
-   public MetaSymbol getLeftSide() {
+   public Variable getLeftSide() {
       return leftSide;
    }
 

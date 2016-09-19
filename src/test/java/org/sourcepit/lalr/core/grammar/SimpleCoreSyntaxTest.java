@@ -16,22 +16,17 @@
 
 package org.sourcepit.lalr.core.grammar;
 
-import static org.junit.Assert.*;
-import static org.sourcepit.lalr.core.grammar.SymbolType.META;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.sourcepit.lalr.core.grammar.SymbolType.TERMINAL;
+import static org.sourcepit.lalr.core.grammar.SymbolType.VARIABLE;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
 import org.junit.Test;
-import org.sourcepit.lalr.core.grammar.AbstractSymbol;
-import org.sourcepit.lalr.core.grammar.CoreSyntax;
-import org.sourcepit.lalr.core.grammar.MetaSymbol;
-import org.sourcepit.lalr.core.grammar.Production;
-import org.sourcepit.lalr.core.grammar.SimpleCoreSyntax;
-import org.sourcepit.lalr.core.grammar.SymbolType;
-import org.sourcepit.lalr.core.grammar.TerminalSymbol;
 
 public class SimpleCoreSyntaxTest {
 
@@ -59,7 +54,7 @@ public class SimpleCoreSyntaxTest {
          fail();
       }
       catch (IllegalArgumentException e) {
-         assertEquals("Meta symbol expected on the left-hand side", e.getMessage());
+         assertEquals("Variable expected on the left-hand side", e.getMessage());
       }
    }
 
@@ -136,17 +131,17 @@ public class SimpleCoreSyntaxTest {
       final CoreSyntax syntax = new SimpleCoreSyntax();
 
       AbstractSymbol s = syntax.parseSymbol("s");
-      assertEquals(TerminalSymbol.class, s.getClass());
+      assertEquals(Terminal.class, s.getClass());
       assertEquals(SymbolType.TERMINAL, s.getType());
       assertEquals("s", s.toString());
 
       s = syntax.parseSymbol("S");
-      assertEquals(MetaSymbol.class, s.getClass());
-      assertEquals(SymbolType.META, s.getType());
+      assertEquals(Variable.class, s.getClass());
+      assertEquals(SymbolType.VARIABLE, s.getType());
       assertEquals("S", s.toString());
 
       s = syntax.parseSymbol("foo");
-      assertEquals(TerminalSymbol.class, s.getClass());
+      assertEquals(Terminal.class, s.getClass());
       assertEquals(SymbolType.TERMINAL, s.getType());
       assertEquals("foo", s.toString());
 
@@ -170,32 +165,32 @@ public class SimpleCoreSyntaxTest {
 
    @Test
    public void testValidateSymbolName() throws Exception {
-      SimpleCoreSyntax.validateSymbolName(META, "F");
-      SimpleCoreSyntax.validateSymbolName(META, "Foo");
-      SimpleCoreSyntax.validateSymbolName(META, "FoO");
+      SimpleCoreSyntax.validateSymbolName(VARIABLE, "F");
+      SimpleCoreSyntax.validateSymbolName(VARIABLE, "Foo");
+      SimpleCoreSyntax.validateSymbolName(VARIABLE, "FoO");
       try {
-         SimpleCoreSyntax.validateSymbolName(META, "ε");
+         SimpleCoreSyntax.validateSymbolName(VARIABLE, "ε");
          fail();
       }
       catch (IllegalArgumentException e) {
          assertEquals("'ε' is reserved and cannot be used as symbol name", e.getMessage());
       }
       try {
-         SimpleCoreSyntax.validateSymbolName(META, "f");
+         SimpleCoreSyntax.validateSymbolName(VARIABLE, "f");
          fail();
       }
       catch (IllegalArgumentException e) {
-         assertEquals("First char of meta symbol 'f' must be upper case", e.getMessage());
+         assertEquals("First char of variable 'f' must be upper case", e.getMessage());
       }
       try {
-         SimpleCoreSyntax.validateSymbolName(META, "$");
+         SimpleCoreSyntax.validateSymbolName(VARIABLE, "$");
          fail();
       }
       catch (IllegalArgumentException e) {
          assertEquals("First char of symbol '$' must be a valid unicode identifier start char", e.getMessage());
       }
       try {
-         SimpleCoreSyntax.validateSymbolName(META, "Foo$");
+         SimpleCoreSyntax.validateSymbolName(VARIABLE, "Foo$");
          fail();
       }
       catch (IllegalArgumentException e) {
@@ -240,7 +235,7 @@ public class SimpleCoreSyntaxTest {
       int codePoint = Character.toCodePoint('\uD801', '\uDC00');
       String str = new String(Character.toChars(codePoint));
       assertTrue(Character.isUnicodeIdentifierStart(codePoint) && Character.isUpperCase(codePoint));
-      SimpleCoreSyntax.validateSymbolName(META, str);
+      SimpleCoreSyntax.validateSymbolName(VARIABLE, str);
       try {
          SimpleCoreSyntax.validateSymbolName(TERMINAL, str);
          fail();
@@ -253,11 +248,11 @@ public class SimpleCoreSyntaxTest {
       str = new String(Character.toChars(codePoint));
       assertTrue(Character.isUnicodeIdentifierStart(codePoint) && Character.isLowerCase(codePoint));
       try {
-         SimpleCoreSyntax.validateSymbolName(META, str);
+         SimpleCoreSyntax.validateSymbolName(VARIABLE, str);
          fail();
       }
       catch (IllegalArgumentException e) {
-         assertEquals("First char of meta symbol '𐐨' must be upper case", e.getMessage());
+         assertEquals("First char of variable '𐐨' must be upper case", e.getMessage());
       }
       SimpleCoreSyntax.validateSymbolName(TERMINAL, str);
 
@@ -265,7 +260,7 @@ public class SimpleCoreSyntaxTest {
       str = new String(Character.toChars(codePoint));
       assertTrue(!Character.isUnicodeIdentifierStart(codePoint) && Character.isUnicodeIdentifierPart(codePoint));
       try {
-         SimpleCoreSyntax.validateSymbolName(META, str);
+         SimpleCoreSyntax.validateSymbolName(VARIABLE, str);
          fail();
       }
       catch (IllegalArgumentException e) {
@@ -278,14 +273,14 @@ public class SimpleCoreSyntaxTest {
       catch (IllegalArgumentException e) {
          assertEquals("First char of symbol '𐇽' must be a valid unicode identifier start char", e.getMessage());
       }
-      SimpleCoreSyntax.validateSymbolName(META, "S" + str);
+      SimpleCoreSyntax.validateSymbolName(VARIABLE, "S" + str);
       SimpleCoreSyntax.validateSymbolName(TERMINAL, "s" + str);
 
       codePoint = Character.toCodePoint('\uD800', '\uDC0C');
       str = new String(Character.toChars(codePoint));
       assertTrue(!Character.isUnicodeIdentifierStart(codePoint) && !Character.isUnicodeIdentifierPart(codePoint));
       try {
-         SimpleCoreSyntax.validateSymbolName(META, "S" + str);
+         SimpleCoreSyntax.validateSymbolName(VARIABLE, "S" + str);
          fail();
       }
       catch (IllegalArgumentException e) {

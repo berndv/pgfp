@@ -16,16 +16,16 @@
 
 package org.sourcepit.lalr.core.graph;
 
-import org.sourcepit.lalr.core.grammar.TerminalSymbol;
+import org.sourcepit.lalr.core.grammar.Terminal;
 
 public class TerminalNode extends AbstractSymbolNode {
 
-   public TerminalNode(TerminalSymbol symbol) {
+   public TerminalNode(Terminal symbol) {
       super(symbol);
    }
 
    @Override
-   public TerminalSymbol getSymbol() {
-      return (TerminalSymbol) super.getSymbol();
+   public Terminal getSymbol() {
+      return (Terminal) super.getSymbol();
    }
 }

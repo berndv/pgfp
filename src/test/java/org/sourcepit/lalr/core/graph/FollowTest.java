@@ -27,10 +27,10 @@ import java.util.Set;
 import org.junit.Test;
 import org.sourcepit.lalr.core.grammar.CoreGrammar;
 import org.sourcepit.lalr.core.grammar.CoreSyntax;
-import org.sourcepit.lalr.core.grammar.MetaSymbol;
 import org.sourcepit.lalr.core.grammar.Production;
 import org.sourcepit.lalr.core.grammar.SimpleCoreSyntax;
-import org.sourcepit.lalr.core.grammar.TerminalSymbol;
+import org.sourcepit.lalr.core.grammar.Terminal;
+import org.sourcepit.lalr.core.grammar.Variable;
 
 public class FollowTest {
    private final CoreSyntax syntax = new SimpleCoreSyntax();
@@ -54,14 +54,14 @@ public class FollowTest {
       DetermineFollowCoreGraphVisitor visitor = new DetermineFollowCoreGraphVisitor();
       graph.accept(visitor);
 
-      Map<MetaSymbol, Set<TerminalSymbol>> symbolToFollow = visitor.getSymbolToFollow();
+      Map<Variable, Set<Terminal>> symbolToFollow = visitor.getSymbolToFollow();
 
-      MetaSymbol s = graph.getGrammar().getMetaSymbol("S");
-      MetaSymbol a = graph.getGrammar().getMetaSymbol("A");
-      MetaSymbol b = graph.getGrammar().getMetaSymbol("B");
-      MetaSymbol c = graph.getGrammar().getMetaSymbol("C");
-      MetaSymbol d = graph.getGrammar().getMetaSymbol("D");
-      MetaSymbol e = graph.getGrammar().getMetaSymbol("E");
+      Variable s = graph.getGrammar().getVariable("S");
+      Variable a = graph.getGrammar().getVariable("A");
+      Variable b = graph.getGrammar().getVariable("B");
+      Variable c = graph.getGrammar().getVariable("C");
+      Variable d = graph.getGrammar().getVariable("D");
+      Variable e = graph.getGrammar().getVariable("E");
 
       assertEquals("[null]", symbolToFollow.get(s).toString());
       assertEquals("[b, c]", symbolToFollow.get(a).toString());
@@ -86,11 +86,11 @@ public class FollowTest {
       DetermineFollowCoreGraphVisitor visitor = new DetermineFollowCoreGraphVisitor();
       graph.accept(visitor);
 
-      Map<MetaSymbol, Set<TerminalSymbol>> symbolToFollow = visitor.getSymbolToFollow();
+      Map<Variable, Set<Terminal>> symbolToFollow = visitor.getSymbolToFollow();
 
-      MetaSymbol s = graph.getGrammar().getMetaSymbol("S");
-      MetaSymbol b = graph.getGrammar().getMetaSymbol("B");
-      MetaSymbol c = graph.getGrammar().getMetaSymbol("C");
+      Variable s = graph.getGrammar().getVariable("S");
+      Variable b = graph.getGrammar().getVariable("B");
+      Variable c = graph.getGrammar().getVariable("C");
 
       assertEquals("[null]", symbolToFollow.get(s).toString());
       assertEquals("[b]", symbolToFollow.get(b).toString());
@@ -114,13 +114,13 @@ public class FollowTest {
       DetermineFollowCoreGraphVisitor visitor = new DetermineFollowCoreGraphVisitor();
       graph.accept(visitor);
 
-      Map<MetaSymbol, Set<TerminalSymbol>> symbolToFollow = visitor.getSymbolToFollow();
+      Map<Variable, Set<Terminal>> symbolToFollow = visitor.getSymbolToFollow();
 
-      MetaSymbol e = graph.getGrammar().getMetaSymbol("E");
-      MetaSymbol ee = graph.getGrammar().getMetaSymbol("EE");
-      MetaSymbol t = graph.getGrammar().getMetaSymbol("T");
-      MetaSymbol tt = graph.getGrammar().getMetaSymbol("TT");
-      MetaSymbol f = graph.getGrammar().getMetaSymbol("F");
+      Variable e = graph.getGrammar().getVariable("E");
+      Variable ee = graph.getGrammar().getVariable("EE");
+      Variable t = graph.getGrammar().getVariable("T");
+      Variable tt = graph.getGrammar().getVariable("TT");
+      Variable f = graph.getGrammar().getVariable("F");
 
       assertEquals("[null, rp]", symbolToFollow.get(e).toString());
       assertEquals("[null, rp]", symbolToFollow.get(ee).toString());
@@ -147,12 +147,12 @@ public class FollowTest {
       DetermineFollowCoreGraphVisitor visitor = new DetermineFollowCoreGraphVisitor();
       graph.accept(visitor);
 
-      Map<MetaSymbol, Set<TerminalSymbol>> symbolToFollow = visitor.getSymbolToFollow();
+      Map<Variable, Set<Terminal>> symbolToFollow = visitor.getSymbolToFollow();
 
-      MetaSymbol s = graph.getGrammar().getMetaSymbol("S");
-      MetaSymbol a = graph.getGrammar().getMetaSymbol("A");
-      MetaSymbol b = graph.getGrammar().getMetaSymbol("B");
-      MetaSymbol c = graph.getGrammar().getMetaSymbol("C");
+      Variable s = graph.getGrammar().getVariable("S");
+      Variable a = graph.getGrammar().getVariable("A");
+      Variable b = graph.getGrammar().getVariable("B");
+      Variable c = graph.getGrammar().getVariable("C");
 
       assertEquals("[null]", symbolToFollow.get(s).toString());
       assertEquals("[h, g, null]", symbolToFollow.get(a).toString());
@@ -174,11 +174,11 @@ public class FollowTest {
       DetermineFollowCoreGraphVisitor visitor = new DetermineFollowCoreGraphVisitor();
       graph.accept(visitor);
 
-      Map<MetaSymbol, Set<TerminalSymbol>> symbolToFollow = visitor.getSymbolToFollow();
+      Map<Variable, Set<Terminal>> symbolToFollow = visitor.getSymbolToFollow();
 
-      MetaSymbol s = graph.getGrammar().getMetaSymbol("S");
-      MetaSymbol a = graph.getGrammar().getMetaSymbol("A");
-      MetaSymbol b = graph.getGrammar().getMetaSymbol("B");
+      Variable s = graph.getGrammar().getVariable("S");
+      Variable a = graph.getGrammar().getVariable("A");
+      Variable b = graph.getGrammar().getVariable("B");
 
       assertEquals("[null]", symbolToFollow.get(s).toString());
       assertEquals("[d, b]", symbolToFollow.get(a).toString());
@@ -221,9 +221,9 @@ public class FollowTest {
       DetermineFollowCoreGraphVisitor visitor = new DetermineFollowCoreGraphVisitor();
       graph.accept(visitor);
 
-      Map<MetaSymbol, Set<TerminalSymbol>> symbolToFollow = visitor.getSymbolToFollow();
+      Map<Variable, Set<Terminal>> symbolToFollow = visitor.getSymbolToFollow();
 
-      MetaSymbol s = graph.getGrammar().getMetaSymbol("S");
+      Variable s = graph.getGrammar().getVariable("S");
 
       assertEquals("[null, s]", symbolToFollow.get(s).toString());
    }

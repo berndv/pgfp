@@ -30,81 +30,81 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class CoreGrammar {
-   private final List<MetaSymbol> metaSymbols;
+   private final List<Variable> variables;
 
-   private final List<TerminalSymbol> terminalSymbols;
+   private final List<Terminal> terminals;
 
    private final List<Production> productions;
 
-   private final Map<MetaSymbol, List<Production>> metaSymbolToProductions;
+   private final Map<Variable, List<Production>> variableToProductions;
 
-   private final MetaSymbol startSymbol;
+   private final Variable startSymbol;
 
    public CoreGrammar(List<Production> productions) {
       this(productions, productions.get(0).getLeftSide());
    }
 
-   public CoreGrammar(List<Production> productions, MetaSymbol startSymbol) {
+   public CoreGrammar(List<Production> productions, Variable startSymbol) {
       notEmpty(productions);
       noDupliatedElements(productions);
 
-      LinkedHashSet<MetaSymbol> metaSymbols = new LinkedHashSet<>();
-      LinkedHashSet<MetaSymbol> allMetaSymbols = new LinkedHashSet<>();
-      LinkedHashSet<TerminalSymbol> terminalSymbols = new LinkedHashSet<>();
+      LinkedHashSet<Variable> variables = new LinkedHashSet<>();
+      LinkedHashSet<Variable> allVariables = new LinkedHashSet<>();
+      LinkedHashSet<Terminal> terminals = new LinkedHashSet<>();
 
-      allMetaSymbols.add(startSymbol);
+      allVariables.add(startSymbol);
 
-      LinkedHashMap<MetaSymbol, LinkedHashSet<Production>> metaSymbolToProductions = new LinkedHashMap<>();
+      LinkedHashMap<Variable, LinkedHashSet<Production>> variableToProductions = new LinkedHashMap<>();
       for (Production production : productions) {
-         final MetaSymbol leftSide = production.getLeftSide();
-         metaSymbols.add(leftSide);
-         allMetaSymbols.add(leftSide);
+         final Variable leftSide = production.getLeftSide();
+         variables.add(leftSide);
+         allVariables.add(leftSide);
          for (AbstractSymbol symbol : production.getRightSide()) {
             switch (symbol.getType()) {
-               case META :
-                  allMetaSymbols.add((MetaSymbol) symbol);
+               case VARIABLE :
+                  allVariables.add((Variable) symbol);
                   break;
                case TERMINAL :
-                  terminalSymbols.add((TerminalSymbol) symbol);
+                  terminals.add((Terminal) symbol);
                   break;
                default :
                   throw new IllegalStateException();
             }
          }
-         LinkedHashSet<Production> alternatives = metaSymbolToProductions.get(leftSide);
+         LinkedHashSet<Production> alternatives = variableToProductions.get(leftSide);
          if (alternatives == null) {
             alternatives = new LinkedHashSet<>();
-            metaSymbolToProductions.put(leftSide, alternatives);
+            variableToProductions.put(leftSide, alternatives);
          }
          alternatives.add(production);
       }
 
-      allMetaSymbols.removeAll(metaSymbols);
-      isTrue(allMetaSymbols.isEmpty(), "Grammar contains undefined meta symbols: " + allMetaSymbols);
+      allVariables.removeAll(variables);
+      isTrue(allVariables.isEmpty(), "Grammar contains undefined variables: " + allVariables);
 
-      this.metaSymbols = unmodifiableList(new ArrayList<>(metaSymbols));
-      this.terminalSymbols = unmodifiableList(new ArrayList<>(terminalSymbols));
+      this.variables = unmodifiableList(new ArrayList<>(variables));
+      this.terminals = unmodifiableList(new ArrayList<>(terminals));
       this.productions = productions;
-      this.metaSymbolToProductions = toUnmodifiableProductionsMap(metaSymbolToProductions);
+      this.variableToProductions = toUnmodifiableProductionsMap(variableToProductions);
       notNull(startSymbol);
       this.startSymbol = startSymbol;
    }
 
-   private static Map<MetaSymbol, List<Production>> toUnmodifiableProductionsMap(
-      LinkedHashMap<MetaSymbol, LinkedHashSet<Production>> map) {
-      final LinkedHashMap<MetaSymbol, List<Production>> result = new LinkedHashMap<>(map.size());
-      for (Entry<MetaSymbol, LinkedHashSet<Production>> entry : map.entrySet()) {
+   private static Map<Variable, List<Production>> toUnmodifiableProductionsMap(
+      LinkedHashMap<Variable, LinkedHashSet<Production>> map) {
+      final LinkedHashMap<Variable, List<Production>> result = new LinkedHashMap<>(map.size());
+      for (Entry<Variable, LinkedHashSet<Production>> entry : map.entrySet()) {
          result.put(entry.getKey(), unmodifiableList(new ArrayList<>(entry.getValue())));
       }
       return result;
    }
 
-   public List<MetaSymbol> getMetaSymbols() {
-      return metaSymbols;
+   public List<Variable> getVariables() {
+      return variables;
    }
 
-   public MetaSymbol getMetaSymbol(String str) {
-      for (MetaSymbol symbol : getMetaSymbols()) {
+   public Variable getVariable(String str) {
+      for (Variable symbol : getVariables()) {
          if (str.equals(symbol.toString())) {
             return symbol;
          }
@@ -112,43 +112,43 @@ public class CoreGrammar {
       return null;
    }
 
-   public List<TerminalSymbol> getTerminalSymbols() {
-      return terminalSymbols;
+   public List<Terminal> getTerminals() {
+      return terminals;
    }
 
    public List<Production> getProductions() {
       return productions;
    }
 
-   public List<Production> getProductions(MetaSymbol metaSymbol) {
-      return metaSymbolToProductions.get(metaSymbol);
+   public List<Production> getProductions(Variable variable) {
+      return variableToProductions.get(variable);
    }
 
-   public MetaSymbol getStartSymbol() {
+   public Variable getStartSymbol() {
       return startSymbol;
    }
 
    @Override
    public String toString() {
       final StringBuilder str = new StringBuilder();
-      str.append("G = (N, T, P, S)\n");
-      str.append("N = {");
-      for (MetaSymbol symbol : metaSymbols) {
+      str.append("G = (V, T, P, S)\n");
+      str.append("V = {");
+      for (Variable symbol : variables) {
          str.append(symbol);
          str.append(", ");
       }
-      if (!metaSymbols.isEmpty()) {
+      if (!variables.isEmpty()) {
          str.deleteCharAt(str.length() - 1);
          str.deleteCharAt(str.length() - 1);
       }
       str.append("}\n");
 
       str.append("T = {");
-      for (TerminalSymbol symbol : terminalSymbols) {
+      for (Terminal symbol : terminals) {
          str.append(symbol);
          str.append(", ");
       }
-      if (!terminalSymbols.isEmpty()) {
+      if (!terminals.isEmpty()) {
          str.deleteCharAt(str.length() - 1);
          str.deleteCharAt(str.length() - 1);
       }
@@ -159,8 +159,8 @@ public class CoreGrammar {
       str.append("\n");
 
       str.append("P = {\n");
-      for (MetaSymbol leftSide : metaSymbols) {
-         for (Production production : metaSymbolToProductions.get(leftSide)) {
+      for (Variable leftSide : variables) {
+         for (Production production : variableToProductions.get(leftSide)) {
             str.append("  ");
             str.append(production);
             str.append("\n");

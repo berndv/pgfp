@@ -22,7 +22,7 @@ import java.util.Set;
 
 public abstract class AbstractCoreGraphVisitor implements CoreGraphVisitor {
 
-   protected Set<MetaNode> visted;
+   protected Set<VariableNode> visted;
 
    protected final boolean skipVisited;
 
@@ -42,19 +42,19 @@ public abstract class AbstractCoreGraphVisitor implements CoreGraphVisitor {
    }
 
    @Override
-   public final boolean startMetaNode(MetaNode metaNode) {
-      if (visted != null && visted.contains(metaNode)) {
+   public final boolean startVariableNode(VariableNode variableNode) {
+      if (visted != null && visted.contains(variableNode)) {
          return false;
       }
-      return onStartMetaNode(metaNode);
+      return onStartVariableNode(variableNode);
    }
 
-   protected boolean onStartMetaNode(MetaNode metaNode) {
+   protected boolean onStartVariableNode(VariableNode variableNode) {
       return true;
    }
 
    @Override
-   public void startAlternative(Alternative alternative) {
+   public void startProductionNode(ProductionNode productionNode) {
    }
 
    @Override
@@ -66,20 +66,20 @@ public abstract class AbstractCoreGraphVisitor implements CoreGraphVisitor {
    }
 
    @Override
-   public void endAlternative(Alternative alternative) {
+   public void endProductionNode(ProductionNode productionNode) {
    }
 
-   protected void onEndMetaNode(MetaNode metaNode) {
+   protected void onEndVariableNode(VariableNode variableNode) {
    }
 
    @Override
-   public final void endMetaNode(MetaNode metaNode) {
-      if (visted == null || !visted.contains(metaNode)) {
-         onEndMetaNode(metaNode);
+   public final void endVariableNode(VariableNode variableNode) {
+      if (visted == null || !visted.contains(variableNode)) {
+         onEndVariableNode(variableNode);
       }
-      
+
       if (visted != null) {
-         visted.add(metaNode);
+         visted.add(variableNode);
       }
    }
 

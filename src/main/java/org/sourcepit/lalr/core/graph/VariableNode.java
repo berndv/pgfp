@@ -19,39 +19,46 @@ package org.sourcepit.lalr.core.graph;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Alternative {
+import org.sourcepit.lalr.core.grammar.Variable;
 
-   private MetaNode parent;
+public class VariableNode extends AbstractSymbolNode {
 
-   private final List<AbstractSymbolNode> symbolNodes = new ArrayList<>();
+   private boolean nullable = false;
 
-   public void setParent(MetaNode parent) {
-      this.parent = parent;
+   private final List<ProductionNode> productionNodes = new ArrayList<>();
+
+   public VariableNode(Variable symbol) {
+      super(symbol);
    }
 
-   public MetaNode getParent() {
-      return parent;
+   @Override
+   public Variable getSymbol() {
+      return (Variable) super.getSymbol();
    }
 
-   public List<AbstractSymbolNode> getSymbolNodes() {
-      return symbolNodes;
+   public List<ProductionNode> getProductionNodes() {
+      return productionNodes;
+   }
+
+   public void setNullable(boolean nullable) {
+      this.nullable = nullable;
+   }
+
+   public boolean isNullable() {
+      return nullable;
    }
 
    @Override
    public String toString() {
-      return toString(true);
-   }
-
-   public String toString(boolean full) {
       StringBuilder builder = new StringBuilder();
-      builder.append("Alternative [");
-      if (parent != null) {
-         builder.append("parent=");
-         builder.append(parent.getSymbol());
+      builder.append("VariableNode [");
+      if (symbol != null) {
+         builder.append("symbol=");
+         builder.append(symbol);
          builder.append(", ");
-         builder.append("index=");
-         builder.append(parent.getAlternatives().indexOf(this));
       }
+      builder.append("nullable=");
+      builder.append(nullable);
       builder.append("]");
       return builder.toString();
    }

@@ -25,42 +25,42 @@ import java.util.Stack;
 import org.apache.commons.lang.Validate;
 import org.sourcepit.lalr.core.grammar.AbstractSymbol;
 import org.sourcepit.lalr.core.grammar.CoreGrammar;
-import org.sourcepit.lalr.core.grammar.MetaSymbol;
 import org.sourcepit.lalr.core.grammar.Production;
-import org.sourcepit.lalr.core.grammar.TerminalSymbol;
+import org.sourcepit.lalr.core.grammar.Terminal;
+import org.sourcepit.lalr.core.grammar.Variable;
 
 public class CoreGraph {
 
    private final CoreGrammar grammar;
 
-   private final Map<MetaSymbol, MetaNode> metaNodes = new HashMap<>();
+   private final Map<Variable, VariableNode> variableNodes = new HashMap<>();
 
-   private final Map<TerminalSymbol, TerminalNode> terminalNodes = new HashMap<>();
+   private final Map<Terminal, TerminalNode> terminalNodes = new HashMap<>();
 
    public CoreGraph(CoreGrammar grammar) {
       this.grammar = grammar;
 
-      for (MetaSymbol metaSymbol : grammar.getMetaSymbols()) {
-         MetaNode metaNode = new MetaNode(metaSymbol);
-         metaNodes.put(metaSymbol, metaNode);
+      for (Variable variable : grammar.getVariables()) {
+         VariableNode variableNode = new VariableNode(variable);
+         variableNodes.put(variable, variableNode);
       }
 
-      for (TerminalSymbol terminalSymbol : grammar.getTerminalSymbols()) {
-         terminalNodes.put(terminalSymbol, new TerminalNode(terminalSymbol));
+      for (Terminal terminal : grammar.getTerminals()) {
+         terminalNodes.put(terminal, new TerminalNode(terminal));
       }
 
-      for (MetaSymbol metaSymbol : grammar.getMetaSymbols()) {
-         final MetaNode metaNode = metaNodes.get(metaSymbol);
-         for (Production production : grammar.getProductions(metaSymbol)) {
-            Alternative alt = new Alternative();
-            alt.setParent(metaNode);
-            metaNode.getAlternatives().add(alt);
+      for (Variable variable : grammar.getVariables()) {
+         final VariableNode variableNode = variableNodes.get(variable);
+         for (Production production : grammar.getProductions(variable)) {
+            ProductionNode alt = new ProductionNode();
+            alt.setParent(variableNode);
+            variableNode.getProductionNodes().add(alt);
 
             for (AbstractSymbol symbol : production.getRightSide()) {
                final AbstractSymbolNode symbolNode;
                switch (symbol.getType()) {
-                  case META :
-                     symbolNode = metaNodes.get(symbol);
+                  case VARIABLE :
+                     symbolNode = variableNodes.get(symbol);
                      break;
                   case TERMINAL :
                      symbolNode = terminalNodes.get(symbol);
@@ -69,8 +69,8 @@ public class CoreGraph {
                      throw new IllegalStateException();
                }
                Validate.notNull(symbolNode);
-               alt.getSymbolNodes().add(symbolNode);
-               final List<Alternative> referencedBy = symbolNode.getReferencedBy();
+               alt.getRightSideNodes().add(symbolNode);
+               final List<ProductionNode> referencedBy = symbolNode.getReferencedBy();
                if (!referencedBy.contains(alt)) {
                   referencedBy.add(alt);
                }
@@ -84,16 +84,16 @@ public class CoreGraph {
       return grammar;
    }
 
-   public MetaNode getMetaNode(String symbol) {
-      final MetaSymbol metaSymbol = getGrammar().getMetaSymbol(symbol);
-      return metaSymbol == null ? null : getMetaNode(metaSymbol);
+   public VariableNode getVariableNode(String symbol) {
+      final Variable variable = getGrammar().getVariable(symbol);
+      return variable == null ? null : getVariableNode(variable);
    }
 
-   public MetaNode getMetaNode(MetaSymbol symbol) {
-      return metaNodes.get(symbol);
+   public VariableNode getVariableNode(Variable symbol) {
+      return variableNodes.get(symbol);
    }
 
-   public TerminalNode getTerminalNode(TerminalSymbol symbol) {
+   public TerminalNode getTerminalNode(Terminal symbol) {
       return terminalNodes.get(symbol);
    }
 
@@ -104,38 +104,38 @@ public class CoreGraph {
 
    private void accept(Stack<Object> trace, CoreGraph graph, CoreGraphVisitor visitor) {
       visitor.startGraph(this);
-      for (MetaSymbol metaSymbol : graph.getGrammar().getMetaSymbols()) {
-         accept(trace, graph.getMetaNode(metaSymbol), visitor);
+      for (Variable variable : graph.getGrammar().getVariables()) {
+         accept(trace, graph.getVariableNode(variable), visitor);
       }
       visitor.endGraph(this);
    }
 
-   private void accept(Stack<Object> trace, MetaNode metaNode, CoreGraphVisitor visitor) {
+   private void accept(Stack<Object> trace, VariableNode variableNode, CoreGraphVisitor visitor) {
 
-      if (trace.contains(metaNode)) {
+      if (trace.contains(variableNode)) {
          visitor.visitRecursion(new ArrayList<>(trace));
          return;
       }
 
-      trace.push(metaNode);
-      visitor.startMetaNode(metaNode);
+      trace.push(variableNode);
+      visitor.startVariableNode(variableNode);
 
-      for (Alternative alternative : metaNode.getAlternatives()) {
-         trace.push(alternative);
-         visitor.startAlternative(alternative);
-         for (AbstractSymbolNode symbolNode : alternative.getSymbolNodes()) {
-            if (symbolNode instanceof MetaNode) {
-               accept(trace, (MetaNode) symbolNode, visitor);
+      for (ProductionNode productionNode : variableNode.getProductionNodes()) {
+         trace.push(productionNode);
+         visitor.startProductionNode(productionNode);
+         for (AbstractSymbolNode symbolNode : productionNode.getRightSideNodes()) {
+            if (symbolNode instanceof VariableNode) {
+               accept(trace, (VariableNode) symbolNode, visitor);
             }
             else {
                visitor.visitTerminalNode((TerminalNode) symbolNode);
             }
          }
-         visitor.endAlternative(alternative);
+         visitor.endProductionNode(productionNode);
          trace.pop();
       }
 
-      visitor.endMetaNode(metaNode);
+      visitor.endVariableNode(variableNode);
       trace.pop();
    }
 

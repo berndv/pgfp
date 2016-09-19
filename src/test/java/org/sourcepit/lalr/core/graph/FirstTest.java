@@ -27,10 +27,10 @@ import java.util.Set;
 import org.junit.Test;
 import org.sourcepit.lalr.core.grammar.CoreGrammar;
 import org.sourcepit.lalr.core.grammar.CoreSyntax;
-import org.sourcepit.lalr.core.grammar.MetaSymbol;
 import org.sourcepit.lalr.core.grammar.Production;
 import org.sourcepit.lalr.core.grammar.SimpleCoreSyntax;
-import org.sourcepit.lalr.core.grammar.TerminalSymbol;
+import org.sourcepit.lalr.core.grammar.Terminal;
+import org.sourcepit.lalr.core.grammar.Variable;
 
 public class FirstTest {
 
@@ -55,14 +55,14 @@ public class FirstTest {
       DetermineFirstCoreGraphVisitor visitor = new DetermineFirstCoreGraphVisitor();
       graph.accept(visitor);
 
-      Map<MetaSymbol, Set<TerminalSymbol>> symbolToFirst = visitor.getSymbolToFirst();
+      Map<Variable, Set<Terminal>> symbolToFirst = visitor.getSymbolToFirst();
 
-      MetaSymbol s = graph.getGrammar().getMetaSymbol("S");
-      MetaSymbol a = graph.getGrammar().getMetaSymbol("A");
-      MetaSymbol b = graph.getGrammar().getMetaSymbol("B");
-      MetaSymbol c = graph.getGrammar().getMetaSymbol("C");
-      MetaSymbol d = graph.getGrammar().getMetaSymbol("D");
-      MetaSymbol e = graph.getGrammar().getMetaSymbol("E");
+      Variable s = graph.getGrammar().getVariable("S");
+      Variable a = graph.getGrammar().getVariable("A");
+      Variable b = graph.getGrammar().getVariable("B");
+      Variable c = graph.getGrammar().getVariable("C");
+      Variable d = graph.getGrammar().getVariable("D");
+      Variable e = graph.getGrammar().getVariable("E");
 
       assertEquals("[a, b, c]", symbolToFirst.get(s).toString());
       assertEquals("[a, null]", symbolToFirst.get(a).toString());
@@ -87,11 +87,11 @@ public class FirstTest {
       DetermineFirstCoreGraphVisitor visitor = new DetermineFirstCoreGraphVisitor();
       graph.accept(visitor);
 
-      Map<MetaSymbol, Set<TerminalSymbol>> symbolToFirst = visitor.getSymbolToFirst();
+      Map<Variable, Set<Terminal>> symbolToFirst = visitor.getSymbolToFirst();
 
-      MetaSymbol s = graph.getGrammar().getMetaSymbol("S");
-      MetaSymbol b = graph.getGrammar().getMetaSymbol("B");
-      MetaSymbol c = graph.getGrammar().getMetaSymbol("C");
+      Variable s = graph.getGrammar().getVariable("S");
+      Variable b = graph.getGrammar().getVariable("B");
+      Variable c = graph.getGrammar().getVariable("C");
 
       assertEquals("[a, b, c, d]", symbolToFirst.get(s).toString());
       assertEquals("[a, null]", symbolToFirst.get(b).toString());
@@ -115,13 +115,13 @@ public class FirstTest {
       DetermineFirstCoreGraphVisitor visitor = new DetermineFirstCoreGraphVisitor();
       graph.accept(visitor);
 
-      Map<MetaSymbol, Set<TerminalSymbol>> symbolToFirst = visitor.getSymbolToFirst();
+      Map<Variable, Set<Terminal>> symbolToFirst = visitor.getSymbolToFirst();
 
-      MetaSymbol e = graph.getGrammar().getMetaSymbol("E");
-      MetaSymbol ee = graph.getGrammar().getMetaSymbol("EE");
-      MetaSymbol t = graph.getGrammar().getMetaSymbol("T");
-      MetaSymbol tt = graph.getGrammar().getMetaSymbol("TT");
-      MetaSymbol f = graph.getGrammar().getMetaSymbol("F");
+      Variable e = graph.getGrammar().getVariable("E");
+      Variable ee = graph.getGrammar().getVariable("EE");
+      Variable t = graph.getGrammar().getVariable("T");
+      Variable tt = graph.getGrammar().getVariable("TT");
+      Variable f = graph.getGrammar().getVariable("F");
 
       assertEquals("[id, lp]", symbolToFirst.get(e).toString());
       assertEquals("[plus, null]", symbolToFirst.get(ee).toString());
@@ -148,19 +148,19 @@ public class FirstTest {
       DetermineFirstCoreGraphVisitor visitor = new DetermineFirstCoreGraphVisitor();
       graph.accept(visitor);
 
-      Map<MetaSymbol, Set<TerminalSymbol>> symbolToFirst = visitor.getSymbolToFirst();
+      Map<Variable, Set<Terminal>> symbolToFirst = visitor.getSymbolToFirst();
 
-      MetaSymbol s = graph.getGrammar().getMetaSymbol("S");
-      MetaSymbol a = graph.getGrammar().getMetaSymbol("A");
-      MetaSymbol b = graph.getGrammar().getMetaSymbol("B");
-      MetaSymbol c = graph.getGrammar().getMetaSymbol("C");
+      Variable s = graph.getGrammar().getVariable("S");
+      Variable a = graph.getGrammar().getVariable("A");
+      Variable b = graph.getGrammar().getVariable("B");
+      Variable c = graph.getGrammar().getVariable("C");
 
       assertEquals("[d, g, h, null, b, a]", symbolToFirst.get(s).toString());
       assertEquals("[d, g, h, null]", symbolToFirst.get(a).toString());
       assertEquals("[g, null]", symbolToFirst.get(b).toString());
       assertEquals("[h, null]", symbolToFirst.get(c).toString());
    }
-   
+
    @Test
    public void testExample5() throws Exception {
       List<Production> productions = new ArrayList<>();
@@ -175,11 +175,11 @@ public class FirstTest {
       DetermineFirstCoreGraphVisitor visitor = new DetermineFirstCoreGraphVisitor();
       graph.accept(visitor);
 
-      Map<MetaSymbol, Set<TerminalSymbol>> symbolToFirst = visitor.getSymbolToFirst();
+      Map<Variable, Set<Terminal>> symbolToFirst = visitor.getSymbolToFirst();
 
-      MetaSymbol s = graph.getGrammar().getMetaSymbol("S");
-      MetaSymbol a = graph.getGrammar().getMetaSymbol("A");
-      MetaSymbol b = graph.getGrammar().getMetaSymbol("B");
+      Variable s = graph.getGrammar().getVariable("S");
+      Variable a = graph.getGrammar().getVariable("A");
+      Variable b = graph.getGrammar().getVariable("B");
 
       assertEquals("[a]", symbolToFirst.get(s).toString());
       assertEquals("[c, null]", symbolToFirst.get(a).toString());
@@ -221,9 +221,9 @@ public class FirstTest {
       DetermineFirstCoreGraphVisitor visitor = new DetermineFirstCoreGraphVisitor();
       graph.accept(visitor);
 
-      Map<MetaSymbol, Set<TerminalSymbol>> symbolToFirst = visitor.getSymbolToFirst();
+      Map<Variable, Set<Terminal>> symbolToFirst = visitor.getSymbolToFirst();
 
-      MetaSymbol s = graph.getGrammar().getMetaSymbol("S");
+      Variable s = graph.getGrammar().getVariable("S");
 
       assertEquals("[s, f, null]", symbolToFirst.get(s).toString());
    }

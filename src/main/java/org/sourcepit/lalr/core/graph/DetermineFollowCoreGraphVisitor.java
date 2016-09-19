@@ -23,25 +23,25 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import org.sourcepit.lalr.core.grammar.MetaSymbol;
-import org.sourcepit.lalr.core.grammar.TerminalSymbol;
+import org.sourcepit.lalr.core.grammar.Terminal;
+import org.sourcepit.lalr.core.grammar.Variable;
 
 public class DetermineFollowCoreGraphVisitor extends DetermineFirstCoreGraphVisitor {
-   private final Map<MetaSymbol, Set<TerminalSymbol>> symbolToFollow = new HashMap<>();
+   private final Map<Variable, Set<Terminal>> symbolToFollow = new HashMap<>();
 
-   public Map<MetaSymbol, Set<TerminalSymbol>> getSymbolToFollow() {
+   public Map<Variable, Set<Terminal>> getSymbolToFollow() {
       return symbolToFollow;
    }
 
    @Override
    public void endGraph(CoreGraph coreGraph) {
-      for (MetaSymbol metaSymbol : coreGraph.getGrammar().getMetaSymbols()) {
-         final MetaNode metaNode = coreGraph.getMetaNode(metaSymbol);
-         getFollow(new Stack<>(), coreGraph, metaNode);
+      for (Variable variable : coreGraph.getGrammar().getVariables()) {
+         final VariableNode variableNode = coreGraph.getVariableNode(variable);
+         getFollow(new Stack<>(), coreGraph, variableNode);
       }
    }
 
-   private Set<TerminalSymbol> getFollow(Stack<MetaNode> trace, CoreGraph graph, MetaNode referencedNode) {
+   private Set<Terminal> getFollow(Stack<VariableNode> trace, CoreGraph graph, VariableNode referencedNode) {
 
       if (trace.contains(referencedNode)) {
          throw new IllegalStateException("Cannot determine follow set because of recursion in " + trace.toString());
@@ -49,15 +49,15 @@ public class DetermineFollowCoreGraphVisitor extends DetermineFirstCoreGraphVisi
 
       trace.push(referencedNode);
 
-      Set<TerminalSymbol> follow = getSymbolToFollow().get(referencedNode.getSymbol());
+      Set<Terminal> follow = getSymbolToFollow().get(referencedNode.getSymbol());
       if (follow == null) {
          follow = new LinkedHashSet<>();
 
-         final MetaSymbol startSymbol = graph.getGrammar().getStartSymbol();
+         final Variable startSymbol = graph.getGrammar().getStartSymbol();
          if (referencedNode.getSymbol().equals(startSymbol)) {
             follow.add(null);
          }
-         for (Alternative referencingAlt : referencedNode.getReferencedBy()) {
+         for (ProductionNode referencingAlt : referencedNode.getReferencedBy()) {
             addFollow(trace, graph, follow, referencingAlt, referencedNode);
          }
 
@@ -69,9 +69,9 @@ public class DetermineFollowCoreGraphVisitor extends DetermineFirstCoreGraphVisi
       return follow;
    }
 
-   private void addFollow(Stack<MetaNode> trace, CoreGraph graph, Set<TerminalSymbol> follow,
-      Alternative referencingAlt, MetaNode referencedNode) {
-      final List<AbstractSymbolNode> nodes = referencingAlt.getSymbolNodes();
+   private void addFollow(Stack<VariableNode> trace, CoreGraph graph, Set<Terminal> follow,
+      ProductionNode referencingAlt, VariableNode referencedNode) {
+      final List<AbstractSymbolNode> nodes = referencingAlt.getRightSideNodes();
 
       boolean nullable = true;
 
@@ -81,16 +81,16 @@ public class DetermineFollowCoreGraphVisitor extends DetermineFirstCoreGraphVisi
          if (node.equals(referencedNode)) {
             for (int j = nextIdx; j < nodes.size(); j++) {
                final AbstractSymbolNode followerNode = nodes.get(j);
-               if (followerNode instanceof MetaNode) {
+               if (followerNode instanceof VariableNode) {
                   if (!followerNode.equals(referencedNode)) {
-                     final Set<TerminalSymbol> firstOfFollower = new LinkedHashSet<>(
+                     final Set<Terminal> firstOfFollower = new LinkedHashSet<>(
                         getSymbolToFirst().get(followerNode.getSymbol()));
                      nullable = firstOfFollower.remove(null);
                      follow.addAll(firstOfFollower);
                   }
                }
                else {
-                  follow.add((TerminalSymbol) followerNode.getSymbol());
+                  follow.add((Terminal) followerNode.getSymbol());
                   nullable = false;
                }
                if (!nullable) {
@@ -105,8 +105,8 @@ public class DetermineFollowCoreGraphVisitor extends DetermineFirstCoreGraphVisi
       }
 
       if (nullable) {
-         if (!referencingAlt.getParent().equals(referencedNode)) {
-            follow.addAll(getFollow(trace, graph, referencingAlt.getParent()));
+         if (!referencingAlt.getLeftSideNode().equals(referencedNode)) {
+            follow.addAll(getFollow(trace, graph, referencingAlt.getLeftSideNode()));
          }
       }
    }

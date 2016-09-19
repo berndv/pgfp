@@ -16,36 +16,33 @@
 
 package org.sourcepit.lalr.core.grammar;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
-import org.sourcepit.lalr.core.grammar.CoreGrammar;
-import org.sourcepit.lalr.core.grammar.CoreSyntax;
-import org.sourcepit.lalr.core.grammar.Production;
-import org.sourcepit.lalr.core.grammar.SimpleCoreSyntax;
 
 public class CoreGrammarTest {
 
    private final CoreSyntax syntax = new SimpleCoreSyntax();
-   
+
    @Test
    public void test() throws Exception {
-      
+
       List<Production> productions = new ArrayList<>();
       productions.add(syntax.parseProduction("S = E F"));
       productions.add(syntax.parseProduction("E = e"));
       productions.add(syntax.parseProduction("F = f"));
       productions.add(syntax.parseProduction("E = ε"));
-      
+
       System.out.println(new CoreGrammar(productions));
-      
+
    }
 
    @Test
-   public void testUndefinedMetaSymbol() throws Exception {
+   public void testUndefinedVariable() throws Exception {
       List<Production> productions = new ArrayList<Production>();
       productions.add(syntax.parseProduction("S = E"));
       try {
@@ -53,7 +50,7 @@ public class CoreGrammarTest {
          fail();
       }
       catch (IllegalArgumentException e) {
-         assertEquals("Grammar contains undefined meta symbols: [E]", e.getMessage());
+         assertEquals("Grammar contains undefined variables: [E]", e.getMessage());
       }
    }
 
@@ -62,11 +59,11 @@ public class CoreGrammarTest {
       List<Production> productions = new ArrayList<Production>();
       productions.add(syntax.parseProduction("S = \u03B5"));
       try {
-         new CoreGrammar(productions, syntax.createMetaSymbol("F"));
+         new CoreGrammar(productions, syntax.createVariable("F"));
          fail();
       }
       catch (IllegalArgumentException e) {
-         assertEquals("Grammar contains undefined meta symbols: [F]", e.getMessage());
+         assertEquals("Grammar contains undefined variables: [F]", e.getMessage());
       }
    }
 

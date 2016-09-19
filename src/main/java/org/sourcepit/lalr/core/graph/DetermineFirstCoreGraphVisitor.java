@@ -26,32 +26,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.sourcepit.lalr.core.grammar.MetaSymbol;
-import org.sourcepit.lalr.core.grammar.TerminalSymbol;
+import org.sourcepit.lalr.core.grammar.Terminal;
+import org.sourcepit.lalr.core.grammar.Variable;
 
 public class DetermineFirstCoreGraphVisitor extends AbstractCoreGraphVisitor {
 
-   private final Map<MetaSymbol, Set<TerminalSymbol>> symbolToFirst = new HashMap<>();
+   private final Map<Variable, Set<Terminal>> symbolToFirst = new HashMap<>();
 
    private List<Runnable> delayed = new ArrayList<>();
 
-   public Map<MetaSymbol, Set<TerminalSymbol>> getSymbolToFirst() {
+   public Map<Variable, Set<Terminal>> getSymbolToFirst() {
       return symbolToFirst;
    }
 
    @Override
-   protected void onEndMetaNode(MetaNode metaNode) {
-      isTrue(!symbolToFirst.containsKey(metaNode.getSymbol()));
-      final Set<TerminalSymbol> first = new LinkedHashSet<>();
+   protected void onEndVariableNode(VariableNode variableNode) {
+      isTrue(!symbolToFirst.containsKey(variableNode.getSymbol()));
+      final Set<Terminal> first = new LinkedHashSet<>();
 
-      for (Alternative alternative : metaNode.getAlternatives()) {
-         addFirstOfAlternative(first, alternative);
+      for (ProductionNode productionNode : variableNode.getProductionNodes()) {
+         addFirstOfProductionNode(first, productionNode);
       }
 
-      put(metaNode.getSymbol(), first);
+      put(variableNode.getSymbol(), first);
    }
 
-   private void put(MetaSymbol symbol, Set<TerminalSymbol> first) {
+   private void put(Variable symbol, Set<Terminal> first) {
       symbolToFirst.put(symbol, first);
 
       // final List<Runnable> resolvers = recursionResolvers.get(symbol);
@@ -62,9 +62,9 @@ public class DetermineFirstCoreGraphVisitor extends AbstractCoreGraphVisitor {
       // }
    }
 
-   // private final Map<MetaSymbol, List<Runnable>> recursionResolvers = new HashMap<>();
+   // private final Map<Variable, List<Runnable>> recursionResolvers = new HashMap<>();
    //
-   // private void addRecursionResolver(MetaNode leftSide, MetaNode required) {
+   // private void addRecursionResolver(VariableNode leftSide, VariableNode required) {
    //
    // List<Runnable> resolvers = recursionResolvers.get(required.getSymbol());
    // if (resolvers == null) {
@@ -74,8 +74,8 @@ public class DetermineFirstCoreGraphVisitor extends AbstractCoreGraphVisitor {
    //
    // resolvers.add(new Runnable() {
    // public void run() {
-   // final Set<TerminalSymbol> first = symbolToFirst.get(leftSide.getSymbol());
-   // final Set<TerminalSymbol> otherFirst = new LinkedHashSet<>(symbolToFirst.get(required.getSymbol()));
+   // final Set<Terminal> first = symbolToFirst.get(leftSide.getSymbol());
+   // final Set<Terminal> otherFirst = new LinkedHashSet<>(symbolToFirst.get(required.getSymbol()));
    // final boolean nullable = otherFirst.remove(null);
    // first.addAll(otherFirst);
    // // safety check
@@ -85,7 +85,7 @@ public class DetermineFirstCoreGraphVisitor extends AbstractCoreGraphVisitor {
    //
    // }
 
-   private void onRecursiveConflic(MetaNode leftSide, MetaNode required) {
+   private void onRecursiveConflic(VariableNode leftSide, VariableNode required) {
 
       // addRecursionResolver(leftSide, required);
 
@@ -101,10 +101,10 @@ public class DetermineFirstCoreGraphVisitor extends AbstractCoreGraphVisitor {
       }
    }
 
-   public void addFirstOfAlternative(Set<TerminalSymbol> first, Alternative alternative) {
-      final MetaNode leftSide = alternative.getParent();
+   public void addFirstOfProductionNode(Set<Terminal> first, ProductionNode productionNode) {
+      final VariableNode leftSide = productionNode.getLeftSideNode();
 
-      for (AbstractSymbolNode node : alternative.getSymbolNodes()) {
+      for (AbstractSymbolNode node : productionNode.getRightSideNodes()) {
          if (node.equals(leftSide)) {
             continue;
          }
@@ -115,31 +115,31 @@ public class DetermineFirstCoreGraphVisitor extends AbstractCoreGraphVisitor {
             return;
          }
 
-         final MetaNode metaNode = (MetaNode) node;
-         addFirstOfMetaNodeWithoutNull(leftSide, first, metaNode);
-         if (!metaNode.isNullable()) {
+         final VariableNode variableNode = (VariableNode) node;
+         addFirstOfVariableNodeWithoutNull(leftSide, first, variableNode);
+         if (!variableNode.isNullable()) {
             return;
          }
       }
 
       // add null if
-      // - alternative is empty or
-      // - no terminal in alternative and
-      // - each meta node is nullable
+      // - production is empty or
+      // - no terminal in production and
+      // - each variable node is nullable
       first.add(null);
    }
 
-   private void addFirstOfMetaNodeWithoutNull(MetaNode leftSide, Set<TerminalSymbol> first, MetaNode required) {
+   private void addFirstOfVariableNodeWithoutNull(VariableNode leftSide, Set<Terminal> first, VariableNode required) {
 
-      final MetaSymbol symbol = required.getSymbol();
+      final Variable symbol = required.getSymbol();
 
-      final Set<TerminalSymbol> firstOfMetaNode = symbolToFirst.get(symbol);
-      if (firstOfMetaNode == null) {
+      final Set<Terminal> firstOfVariableNode = symbolToFirst.get(symbol);
+      if (firstOfVariableNode == null) {
          // recursive conflict detected
          onRecursiveConflic(leftSide, required);
       }
       else {
-         final Set<TerminalSymbol> otherFirst = new LinkedHashSet<>(firstOfMetaNode);
+         final Set<Terminal> otherFirst = new LinkedHashSet<>(firstOfVariableNode);
          final boolean nullable = otherFirst.remove(null);
          first.addAll(otherFirst);
          // safety check
