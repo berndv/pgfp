@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.sourcepit.lalr.core.graph;
+package org.sourcepit.lalr.core.grammar.graph;
 
 import java.util.HashSet;
 import java.util.List;

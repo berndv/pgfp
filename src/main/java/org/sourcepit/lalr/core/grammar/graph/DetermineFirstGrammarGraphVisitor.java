@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.sourcepit.lalr.core.graph;
+package org.sourcepit.lalr.core.grammar.graph;
 
 import static java.lang.String.format;
 import static org.apache.commons.lang.Validate.isTrue;

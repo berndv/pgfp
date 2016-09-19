@@ -1,5 +1,5 @@
 /*
- * > * Copyright 2016 Bernd Vogt and others.
+ * Copyright 2016 Bernd Vogt and others.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,18 @@
  * limitations under the License.
  */
 
-package org.sourcepit.lalr.core.graph;
+package org.sourcepit.lalr.core.grammar.graph;
 
-import java.util.List;
+import org.sourcepit.lalr.core.grammar.Terminal;
 
-public interface GrammarGraphVisitor {
+public class TerminalNode extends AbstractSymbolNode {
 
-   void startGraph(GrammarGraph grammarGraph);
+   public TerminalNode(Terminal symbol) {
+      super(symbol);
+   }
 
-   boolean startVariableNode(VariableNode variableNode);
-
-   void startProductionNode(ProductionNode productionNode);
-
-   void visitRecursion(List<Object> trace);
-
-   void visitTerminalNode(TerminalNode symbolNode);
-
-   void endProductionNode(ProductionNode productionNode);
-
-   void endVariableNode(VariableNode variableNode);
-
-   void endGraph(GrammarGraph grammarGraph);
-
+   @Override
+   public Terminal getSymbol() {
+      return (Terminal) super.getSymbol();
+   }
 }

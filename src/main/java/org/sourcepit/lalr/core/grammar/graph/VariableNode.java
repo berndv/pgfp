@@ -14,43 +14,51 @@
  * limitations under the License.
  */
 
-package org.sourcepit.lalr.core.graph;
+package org.sourcepit.lalr.core.grammar.graph;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sourcepit.lalr.core.grammar.AbstractSymbol;
+import org.sourcepit.lalr.core.grammar.Variable;
 
-public abstract class AbstractSymbolNode {
-   protected final AbstractSymbol symbol;
+public class VariableNode extends AbstractSymbolNode {
 
-   protected final List<ProductionNode> referencedBy = new ArrayList<>();
+   private boolean nullable = false;
 
-   public AbstractSymbolNode(AbstractSymbol symbol) {
-      this.symbol = symbol;
+   private final List<ProductionNode> productionNodes = new ArrayList<>();
+
+   public VariableNode(Variable symbol) {
+      super(symbol);
    }
 
-   public AbstractSymbol getSymbol() {
-      return symbol;
+   @Override
+   public Variable getSymbol() {
+      return (Variable) super.getSymbol();
    }
 
-   public List<ProductionNode> getReferencedBy() {
-      return referencedBy;
+   public List<ProductionNode> getProductionNodes() {
+      return productionNodes;
+   }
+
+   public void setNullable(boolean nullable) {
+      this.nullable = nullable;
+   }
+
+   public boolean isNullable() {
+      return nullable;
    }
 
    @Override
    public String toString() {
-      return toString(true);
-   }
-
-   public String toString(boolean full) {
       StringBuilder builder = new StringBuilder();
-      builder.append(getClass().getSimpleName());
-      builder.append(" [");
+      builder.append("VariableNode [");
       if (symbol != null) {
          builder.append("symbol=");
          builder.append(symbol);
+         builder.append(", ");
       }
+      builder.append("nullable=");
+      builder.append(nullable);
       builder.append("]");
       return builder.toString();
    }

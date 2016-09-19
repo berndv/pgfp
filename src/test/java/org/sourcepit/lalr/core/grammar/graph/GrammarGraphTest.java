@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.sourcepit.lalr.core.graph;
+package org.sourcepit.lalr.core.grammar.graph;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -28,6 +28,9 @@ import org.sourcepit.lalr.core.grammar.Grammar;
 import org.sourcepit.lalr.core.grammar.CoreSyntax;
 import org.sourcepit.lalr.core.grammar.Production;
 import org.sourcepit.lalr.core.grammar.SimpleCoreSyntax;
+import org.sourcepit.lalr.core.grammar.graph.AbstractGrammarGraphVisitor;
+import org.sourcepit.lalr.core.grammar.graph.GrammarGraph;
+import org.sourcepit.lalr.core.grammar.graph.VariableNode;
 
 public class GrammarGraphTest {
    private final CoreSyntax syntax = new SimpleCoreSyntax();

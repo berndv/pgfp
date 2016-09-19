@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.sourcepit.lalr.core.graph;
+package org.sourcepit.lalr.core.grammar.graph;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -31,8 +31,11 @@ import org.sourcepit.lalr.core.grammar.Production;
 import org.sourcepit.lalr.core.grammar.SimpleCoreSyntax;
 import org.sourcepit.lalr.core.grammar.Terminal;
 import org.sourcepit.lalr.core.grammar.Variable;
+import org.sourcepit.lalr.core.grammar.graph.DetermineFirstGrammarGraphVisitor;
+import org.sourcepit.lalr.core.grammar.graph.GrammarGraph;
 
-public class FollowTest {
+public class FirstTest {
+
    private final CoreSyntax syntax = new SimpleCoreSyntax();
 
    @Test
@@ -51,10 +54,10 @@ public class FollowTest {
 
       GrammarGraph graph = new GrammarGraph(new Grammar(productions));
 
-      DetermineFollowGrammarGraphVisitor visitor = new DetermineFollowGrammarGraphVisitor();
+      DetermineFirstGrammarGraphVisitor visitor = new DetermineFirstGrammarGraphVisitor();
       graph.accept(visitor);
 
-      Map<Variable, Set<Terminal>> symbolToFollow = visitor.getSymbolToFollow();
+      Map<Variable, Set<Terminal>> symbolToFirst = visitor.getSymbolToFirst();
 
       Variable s = graph.getGrammar().getVariable("S");
       Variable a = graph.getGrammar().getVariable("A");
@@ -63,12 +66,12 @@ public class FollowTest {
       Variable d = graph.getGrammar().getVariable("D");
       Variable e = graph.getGrammar().getVariable("E");
 
-      assertEquals("[null]", symbolToFollow.get(s).toString());
-      assertEquals("[b, c]", symbolToFollow.get(a).toString());
-      assertEquals("[c]", symbolToFollow.get(b).toString());
-      assertEquals("[d, e, null]", symbolToFollow.get(c).toString());
-      assertEquals("[e, null]", symbolToFollow.get(d).toString());
-      assertEquals("[null]", symbolToFollow.get(e).toString());
+      assertEquals("[a, b, c]", symbolToFirst.get(s).toString());
+      assertEquals("[a, null]", symbolToFirst.get(a).toString());
+      assertEquals("[b, null]", symbolToFirst.get(b).toString());
+      assertEquals("[c]", symbolToFirst.get(c).toString());
+      assertEquals("[d, null]", symbolToFirst.get(d).toString());
+      assertEquals("[e, null]", symbolToFirst.get(e).toString());
    }
 
    @Test
@@ -83,18 +86,18 @@ public class FollowTest {
 
       GrammarGraph graph = new GrammarGraph(new Grammar(productions));
 
-      DetermineFollowGrammarGraphVisitor visitor = new DetermineFollowGrammarGraphVisitor();
+      DetermineFirstGrammarGraphVisitor visitor = new DetermineFirstGrammarGraphVisitor();
       graph.accept(visitor);
 
-      Map<Variable, Set<Terminal>> symbolToFollow = visitor.getSymbolToFollow();
+      Map<Variable, Set<Terminal>> symbolToFirst = visitor.getSymbolToFirst();
 
       Variable s = graph.getGrammar().getVariable("S");
       Variable b = graph.getGrammar().getVariable("B");
       Variable c = graph.getGrammar().getVariable("C");
 
-      assertEquals("[null]", symbolToFollow.get(s).toString());
-      assertEquals("[b]", symbolToFollow.get(b).toString());
-      assertEquals("[d]", symbolToFollow.get(c).toString());
+      assertEquals("[a, b, c, d]", symbolToFirst.get(s).toString());
+      assertEquals("[a, null]", symbolToFirst.get(b).toString());
+      assertEquals("[c, null]", symbolToFirst.get(c).toString());
    }
 
    @Test
@@ -111,10 +114,10 @@ public class FollowTest {
 
       GrammarGraph graph = new GrammarGraph(new Grammar(productions));
 
-      DetermineFollowGrammarGraphVisitor visitor = new DetermineFollowGrammarGraphVisitor();
+      DetermineFirstGrammarGraphVisitor visitor = new DetermineFirstGrammarGraphVisitor();
       graph.accept(visitor);
 
-      Map<Variable, Set<Terminal>> symbolToFollow = visitor.getSymbolToFollow();
+      Map<Variable, Set<Terminal>> symbolToFirst = visitor.getSymbolToFirst();
 
       Variable e = graph.getGrammar().getVariable("E");
       Variable ee = graph.getGrammar().getVariable("EE");
@@ -122,11 +125,11 @@ public class FollowTest {
       Variable tt = graph.getGrammar().getVariable("TT");
       Variable f = graph.getGrammar().getVariable("F");
 
-      assertEquals("[null, rp]", symbolToFollow.get(e).toString());
-      assertEquals("[null, rp]", symbolToFollow.get(ee).toString());
-      assertEquals("[plus, null, rp]", symbolToFollow.get(t).toString());
-      assertEquals("[plus, null, rp]", symbolToFollow.get(tt).toString());
-      assertEquals("[star, plus, null, rp]", symbolToFollow.get(f).toString());
+      assertEquals("[id, lp]", symbolToFirst.get(e).toString());
+      assertEquals("[plus, null]", symbolToFirst.get(ee).toString());
+      assertEquals("[id, lp]", symbolToFirst.get(t).toString());
+      assertEquals("[star, null]", symbolToFirst.get(tt).toString());
+      assertEquals("[id, lp]", symbolToFirst.get(f).toString());
    }
 
    @Test
@@ -144,20 +147,20 @@ public class FollowTest {
 
       GrammarGraph graph = new GrammarGraph(new Grammar(productions));
 
-      DetermineFollowGrammarGraphVisitor visitor = new DetermineFollowGrammarGraphVisitor();
+      DetermineFirstGrammarGraphVisitor visitor = new DetermineFirstGrammarGraphVisitor();
       graph.accept(visitor);
 
-      Map<Variable, Set<Terminal>> symbolToFollow = visitor.getSymbolToFollow();
+      Map<Variable, Set<Terminal>> symbolToFirst = visitor.getSymbolToFirst();
 
       Variable s = graph.getGrammar().getVariable("S");
       Variable a = graph.getGrammar().getVariable("A");
       Variable b = graph.getGrammar().getVariable("B");
       Variable c = graph.getGrammar().getVariable("C");
 
-      assertEquals("[null]", symbolToFollow.get(s).toString());
-      assertEquals("[h, g, null]", symbolToFollow.get(a).toString());
-      assertEquals("[null, a, h, g]", symbolToFollow.get(b).toString());
-      assertEquals("[g, null, b, h]", symbolToFollow.get(c).toString());
+      assertEquals("[d, g, h, null, b, a]", symbolToFirst.get(s).toString());
+      assertEquals("[d, g, h, null]", symbolToFirst.get(a).toString());
+      assertEquals("[g, null]", symbolToFirst.get(b).toString());
+      assertEquals("[h, null]", symbolToFirst.get(c).toString());
    }
 
    @Test
@@ -171,25 +174,25 @@ public class FollowTest {
 
       GrammarGraph graph = new GrammarGraph(new Grammar(productions));
 
-      DetermineFollowGrammarGraphVisitor visitor = new DetermineFollowGrammarGraphVisitor();
+      DetermineFirstGrammarGraphVisitor visitor = new DetermineFirstGrammarGraphVisitor();
       graph.accept(visitor);
 
-      Map<Variable, Set<Terminal>> symbolToFollow = visitor.getSymbolToFollow();
+      Map<Variable, Set<Terminal>> symbolToFirst = visitor.getSymbolToFirst();
 
       Variable s = graph.getGrammar().getVariable("S");
       Variable a = graph.getGrammar().getVariable("A");
       Variable b = graph.getGrammar().getVariable("B");
 
-      assertEquals("[null]", symbolToFollow.get(s).toString());
-      assertEquals("[d, b]", symbolToFollow.get(a).toString());
-      assertEquals("[b]", symbolToFollow.get(b).toString());
+      assertEquals("[a]", symbolToFirst.get(s).toString());
+      assertEquals("[c, null]", symbolToFirst.get(a).toString());
+      assertEquals("[d, null]", symbolToFirst.get(b).toString());
    }
 
    @Test
    public void testRecursiveConflict() throws Exception {
       List<Production> productions = new ArrayList<>();
-      productions.add(syntax.parseProduction("S = A c"));
-      productions.add(syntax.parseProduction("S = B f"));
+      productions.add(syntax.parseProduction("S = A"));
+      productions.add(syntax.parseProduction("S = B"));
       productions.add(syntax.parseProduction("A = B"));
       productions.add(syntax.parseProduction("A = a"));
       productions.add(syntax.parseProduction("A = ε"));
@@ -199,8 +202,7 @@ public class FollowTest {
 
       GrammarGraph graph = new GrammarGraph(new Grammar(productions));
 
-      DetermineFollowGrammarGraphVisitor visitor = new DetermineFollowGrammarGraphVisitor();
-
+      DetermineFirstGrammarGraphVisitor visitor = new DetermineFirstGrammarGraphVisitor();
       try {
          graph.accept(visitor);
          fail();
@@ -218,14 +220,15 @@ public class FollowTest {
 
       GrammarGraph graph = new GrammarGraph(new Grammar(productions));
 
-      DetermineFollowGrammarGraphVisitor visitor = new DetermineFollowGrammarGraphVisitor();
+      DetermineFirstGrammarGraphVisitor visitor = new DetermineFirstGrammarGraphVisitor();
       graph.accept(visitor);
 
-      Map<Variable, Set<Terminal>> symbolToFollow = visitor.getSymbolToFollow();
+      Map<Variable, Set<Terminal>> symbolToFirst = visitor.getSymbolToFirst();
 
       Variable s = graph.getGrammar().getVariable("S");
 
-      assertEquals("[null, s]", symbolToFollow.get(s).toString());
+      assertEquals("[s, f, null]", symbolToFirst.get(s).toString());
    }
+
 
 }
