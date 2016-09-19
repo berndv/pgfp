@@ -38,6 +38,12 @@ public class FirstTest {
 
    private final Syntax syntax = new SimpleSyntax();
 
+   private GrammarGraph newGrammarGraph(List<Production> productions) {
+      final GrammarGraph graph = new GrammarGraph(new Grammar(productions));
+      graph.accept(new DetermineNullableGrammarGraphVisitor());
+      return graph;
+   }
+
    @Test
    public void testExample1() throws Exception {
       List<Production> productions = new ArrayList<>();
@@ -52,7 +58,7 @@ public class FirstTest {
       productions.add(syntax.parseProduction("E = e"));
       productions.add(syntax.parseProduction("E = ε"));
 
-      GrammarGraph graph = new GrammarGraph(new Grammar(productions));
+      GrammarGraph graph = newGrammarGraph(productions);
 
       DetermineFirstGrammarGraphVisitor visitor = new DetermineFirstGrammarGraphVisitor();
       graph.accept(visitor);
@@ -84,7 +90,7 @@ public class FirstTest {
       productions.add(syntax.parseProduction("C = c C"));
       productions.add(syntax.parseProduction("C = ε"));
 
-      GrammarGraph graph = new GrammarGraph(new Grammar(productions));
+      GrammarGraph graph = newGrammarGraph(productions);
 
       DetermineFirstGrammarGraphVisitor visitor = new DetermineFirstGrammarGraphVisitor();
       graph.accept(visitor);
@@ -112,7 +118,7 @@ public class FirstTest {
       productions.add(syntax.parseProduction("F = id"));
       productions.add(syntax.parseProduction("F = lp E rp"));
 
-      GrammarGraph graph = new GrammarGraph(new Grammar(productions));
+      GrammarGraph graph = newGrammarGraph(productions);
 
       DetermineFirstGrammarGraphVisitor visitor = new DetermineFirstGrammarGraphVisitor();
       graph.accept(visitor);
@@ -145,7 +151,7 @@ public class FirstTest {
       productions.add(syntax.parseProduction("C = h"));
       productions.add(syntax.parseProduction("C = ε"));
 
-      GrammarGraph graph = new GrammarGraph(new Grammar(productions));
+      GrammarGraph graph = newGrammarGraph(productions);
 
       DetermineFirstGrammarGraphVisitor visitor = new DetermineFirstGrammarGraphVisitor();
       graph.accept(visitor);
@@ -172,7 +178,7 @@ public class FirstTest {
       productions.add(syntax.parseProduction("B = d"));
       productions.add(syntax.parseProduction("B = ε"));
 
-      GrammarGraph graph = new GrammarGraph(new Grammar(productions));
+      GrammarGraph graph = newGrammarGraph(productions);
 
       DetermineFirstGrammarGraphVisitor visitor = new DetermineFirstGrammarGraphVisitor();
       graph.accept(visitor);
@@ -200,7 +206,7 @@ public class FirstTest {
       productions.add(syntax.parseProduction("B = b"));
       productions.add(syntax.parseProduction("B = ε"));
 
-      GrammarGraph graph = new GrammarGraph(new Grammar(productions));
+      GrammarGraph graph = newGrammarGraph(productions);
 
       DetermineFirstGrammarGraphVisitor visitor = new DetermineFirstGrammarGraphVisitor();
       try {
@@ -218,7 +224,7 @@ public class FirstTest {
       productions.add(syntax.parseProduction("S = f"));
       productions.add(syntax.parseProduction("S = ε"));
 
-      GrammarGraph graph = new GrammarGraph(new Grammar(productions));
+      GrammarGraph graph = newGrammarGraph(productions);
 
       DetermineFirstGrammarGraphVisitor visitor = new DetermineFirstGrammarGraphVisitor();
       graph.accept(visitor);

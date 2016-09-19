@@ -17,91 +17,21 @@
 package org.sourcepit.lalr.core.grammar.graph;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 import org.sourcepit.lalr.core.grammar.Grammar;
-import org.sourcepit.lalr.core.grammar.Syntax;
 import org.sourcepit.lalr.core.grammar.Production;
 import org.sourcepit.lalr.core.grammar.SimpleSyntax;
-import org.sourcepit.lalr.core.grammar.graph.AbstractGrammarGraphVisitor;
-import org.sourcepit.lalr.core.grammar.graph.GrammarGraph;
-import org.sourcepit.lalr.core.grammar.graph.VariableNode;
+import org.sourcepit.lalr.core.grammar.Syntax;
 
 public class GrammarGraphTest {
    private final Syntax syntax = new SimpleSyntax();
 
-   @Test
-   public void testNullable() {
-
-      List<Production> productions = new ArrayList<>();
-      productions.add(syntax.parseProduction("S = a B"));
-      productions.add(syntax.parseProduction("B = C D"));
-      productions.add(syntax.parseProduction("B = b"));
-      productions.add(syntax.parseProduction("C = C"));
-      productions.add(syntax.parseProduction("C = c"));
-      productions.add(syntax.parseProduction("C = ε"));
-      productions.add(syntax.parseProduction("D = ε"));
-
-      GrammarGraph graph = new GrammarGraph(new Grammar(productions));
-
-      assertFalse(graph.getVariableNode(productions.get(0).getLeftSide()).isNullable());
-      assertTrue(graph.getVariableNode(productions.get(1).getLeftSide()).isNullable());
-      assertTrue(graph.getVariableNode(productions.get(3).getLeftSide()).isNullable());
-      assertTrue(graph.getVariableNode(productions.get(6).getLeftSide()).isNullable());
-
-      productions = new ArrayList<>();
-      productions.add(syntax.parseProduction("S = a B"));
-      productions.add(syntax.parseProduction("B = C D"));
-      productions.add(syntax.parseProduction("B = b"));
-      productions.add(syntax.parseProduction("C = C"));
-      productions.add(syntax.parseProduction("C = c"));
-      productions.add(syntax.parseProduction("C = ε"));
-      productions.add(syntax.parseProduction("D = d"));
-
-      graph = new GrammarGraph(new Grammar(productions));
-
-      assertFalse(graph.getVariableNode(productions.get(0).getLeftSide()).isNullable());
-      assertFalse(graph.getVariableNode(productions.get(1).getLeftSide()).isNullable());
-      assertTrue(graph.getVariableNode(productions.get(3).getLeftSide()).isNullable());
-      assertFalse(graph.getVariableNode(productions.get(6).getLeftSide()).isNullable());
-
-      productions = new ArrayList<>();
-      productions.add(syntax.parseProduction("S = A S"));
-      productions.add(syntax.parseProduction("A = a"));
-      productions.add(syntax.parseProduction("A = ε"));
-
-      graph = new GrammarGraph(new Grammar(productions));
-
-      assertTrue(graph.getVariableNode(productions.get(0).getLeftSide()).isNullable());
-      assertTrue(graph.getVariableNode(productions.get(1).getLeftSide()).isNullable());
-   }
-
-   @Test
-   public void testFoo() throws Exception {
-      List<Production> productions = new ArrayList<>();
-      productions.add(syntax.parseProduction("S = A"));
-      productions.add(syntax.parseProduction("S = B"));
-      productions.add(syntax.parseProduction("A = a"));
-      productions.add(syntax.parseProduction("A = B"));
-      productions.add(syntax.parseProduction("A = ε"));
-      productions.add(syntax.parseProduction("B = A"));
-      productions.add(syntax.parseProduction("B = b"));
-      productions.add(syntax.parseProduction("B = ε"));
-
-      GrammarGraph graph = new GrammarGraph(new Grammar(productions));
-
-      VariableNode s = graph.getVariableNode("S");
-      VariableNode a = graph.getVariableNode("A");
-      VariableNode b = graph.getVariableNode("B");
-
-      assertTrue(s.isNullable());
-      assertTrue(a.isNullable());
-      assertTrue(b.isNullable());
+   private GrammarGraph newGrammarGraph(List<Production> productions) {
+      return new GrammarGraph(new Grammar(productions));
    }
 
    @Test
@@ -113,7 +43,7 @@ public class GrammarGraphTest {
       List<VariableNode> visited = new ArrayList<>();
       List<List<Object>> recursions = new ArrayList<>();
 
-      GrammarGraph graph = new GrammarGraph(new Grammar(productions));
+      GrammarGraph graph = newGrammarGraph(productions);
       graph.accept(new AbstractGrammarGraphVisitor(false) {
          @Override
          public void visitRecursion(List<Object> trace) {

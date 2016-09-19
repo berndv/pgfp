@@ -37,6 +37,12 @@ import org.sourcepit.lalr.core.grammar.graph.GrammarGraph;
 public class FollowTest {
    private final Syntax syntax = new SimpleSyntax();
 
+   private GrammarGraph newGrammarGraph(List<Production> productions) {
+      final GrammarGraph graph = new GrammarGraph(new Grammar(productions));
+      graph.accept(new DetermineNullableGrammarGraphVisitor());
+      return graph;
+   }
+
    @Test
    public void testExample1() throws Exception {
       List<Production> productions = new ArrayList<>();
@@ -51,7 +57,7 @@ public class FollowTest {
       productions.add(syntax.parseProduction("E = e"));
       productions.add(syntax.parseProduction("E = ε"));
 
-      GrammarGraph graph = new GrammarGraph(new Grammar(productions));
+      GrammarGraph graph = newGrammarGraph(productions);
 
       DetermineFollowGrammarGraphVisitor visitor = new DetermineFollowGrammarGraphVisitor();
       graph.accept(visitor);
@@ -83,7 +89,7 @@ public class FollowTest {
       productions.add(syntax.parseProduction("C = c C"));
       productions.add(syntax.parseProduction("C = ε"));
 
-      GrammarGraph graph = new GrammarGraph(new Grammar(productions));
+      GrammarGraph graph = newGrammarGraph(productions);
 
       DetermineFollowGrammarGraphVisitor visitor = new DetermineFollowGrammarGraphVisitor();
       graph.accept(visitor);
@@ -111,7 +117,7 @@ public class FollowTest {
       productions.add(syntax.parseProduction("F = id"));
       productions.add(syntax.parseProduction("F = lp E rp"));
 
-      GrammarGraph graph = new GrammarGraph(new Grammar(productions));
+      GrammarGraph graph = newGrammarGraph(productions);
 
       DetermineFollowGrammarGraphVisitor visitor = new DetermineFollowGrammarGraphVisitor();
       graph.accept(visitor);
@@ -144,7 +150,7 @@ public class FollowTest {
       productions.add(syntax.parseProduction("C = h"));
       productions.add(syntax.parseProduction("C = ε"));
 
-      GrammarGraph graph = new GrammarGraph(new Grammar(productions));
+      GrammarGraph graph = newGrammarGraph(productions);
 
       DetermineFollowGrammarGraphVisitor visitor = new DetermineFollowGrammarGraphVisitor();
       graph.accept(visitor);
@@ -171,7 +177,7 @@ public class FollowTest {
       productions.add(syntax.parseProduction("B = d"));
       productions.add(syntax.parseProduction("B = ε"));
 
-      GrammarGraph graph = new GrammarGraph(new Grammar(productions));
+      GrammarGraph graph = newGrammarGraph(productions);
 
       DetermineFollowGrammarGraphVisitor visitor = new DetermineFollowGrammarGraphVisitor();
       graph.accept(visitor);
@@ -199,7 +205,7 @@ public class FollowTest {
       productions.add(syntax.parseProduction("B = b"));
       productions.add(syntax.parseProduction("B = ε"));
 
-      GrammarGraph graph = new GrammarGraph(new Grammar(productions));
+      GrammarGraph graph = newGrammarGraph(productions);
 
       DetermineFollowGrammarGraphVisitor visitor = new DetermineFollowGrammarGraphVisitor();
 
@@ -218,7 +224,7 @@ public class FollowTest {
       productions.add(syntax.parseProduction("S = f"));
       productions.add(syntax.parseProduction("S = ε"));
 
-      GrammarGraph graph = new GrammarGraph(new Grammar(productions));
+      GrammarGraph graph = newGrammarGraph(productions);
 
       DetermineFollowGrammarGraphVisitor visitor = new DetermineFollowGrammarGraphVisitor();
       graph.accept(visitor);

@@ -18,7 +18,9 @@ package org.sourcepit.lalr.core.grammar.graph;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import org.sourcepit.lalr.core.grammar.Terminal;
 import org.sourcepit.lalr.core.grammar.Variable;
 
 public class VariableNode extends AbstractSymbolNode {
@@ -26,6 +28,8 @@ public class VariableNode extends AbstractSymbolNode {
    private boolean nullable = false;
 
    private final List<ProductionNode> productionNodes = new ArrayList<>();
+
+   private Set<Terminal> firstSet, followSet;
 
    public VariableNode(Variable symbol) {
       super(symbol);
@@ -46,6 +50,22 @@ public class VariableNode extends AbstractSymbolNode {
 
    public boolean isNullable() {
       return nullable;
+   }
+
+   public void setFirstSet(Set<Terminal> firstSet) {
+      this.firstSet = firstSet;
+   }
+
+   public Set<Terminal> getFirstSet() {
+      return firstSet;
+   }
+
+   public void setFollowSet(Set<Terminal> followSet) {
+      this.followSet = followSet;
+   }
+
+   public Set<Terminal> getFollowSet() {
+      return followSet;
    }
 
    @Override

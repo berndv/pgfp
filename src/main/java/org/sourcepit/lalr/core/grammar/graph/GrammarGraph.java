@@ -77,7 +77,6 @@ public class GrammarGraph {
             }
          }
       }
-      accept(new DetermineNullableGrammarGraphVisitor());
    }
 
    public Grammar getGrammar() {
