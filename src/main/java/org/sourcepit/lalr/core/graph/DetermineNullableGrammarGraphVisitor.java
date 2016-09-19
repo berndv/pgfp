@@ -16,7 +16,7 @@
 
 package org.sourcepit.lalr.core.graph;
 
-public class DetermineNullableCoreGraphVisitor extends AbstractCoreGraphVisitor {
+public class DetermineNullableGrammarGraphVisitor extends AbstractGrammarGraphVisitor {
    @Override
    public void endProductionNode(ProductionNode productionNode) {
       final VariableNode parent = productionNode.getLeftSideNode();

@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-public class CoreGrammarTest {
+public class GrammarTest {
 
    private final CoreSyntax syntax = new SimpleCoreSyntax();
 
@@ -37,7 +37,7 @@ public class CoreGrammarTest {
       productions.add(syntax.parseProduction("F = f"));
       productions.add(syntax.parseProduction("E = ε"));
 
-      System.out.println(new CoreGrammar(productions));
+      System.out.println(new Grammar(productions));
 
    }
 
@@ -46,7 +46,7 @@ public class CoreGrammarTest {
       List<Production> productions = new ArrayList<Production>();
       productions.add(syntax.parseProduction("S = E"));
       try {
-         new CoreGrammar(productions);
+         new Grammar(productions);
          fail();
       }
       catch (IllegalArgumentException e) {
@@ -59,7 +59,7 @@ public class CoreGrammarTest {
       List<Production> productions = new ArrayList<Production>();
       productions.add(syntax.parseProduction("S = \u03B5"));
       try {
-         new CoreGrammar(productions, syntax.createVariable("F"));
+         new Grammar(productions, syntax.createVariable("F"));
          fail();
       }
       catch (IllegalArgumentException e) {

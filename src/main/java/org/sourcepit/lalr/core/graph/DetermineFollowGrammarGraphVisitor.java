@@ -26,7 +26,7 @@ import java.util.Stack;
 import org.sourcepit.lalr.core.grammar.Terminal;
 import org.sourcepit.lalr.core.grammar.Variable;
 
-public class DetermineFollowCoreGraphVisitor extends DetermineFirstCoreGraphVisitor {
+public class DetermineFollowGrammarGraphVisitor extends DetermineFirstGrammarGraphVisitor {
    private final Map<Variable, Set<Terminal>> symbolToFollow = new HashMap<>();
 
    public Map<Variable, Set<Terminal>> getSymbolToFollow() {
@@ -34,14 +34,14 @@ public class DetermineFollowCoreGraphVisitor extends DetermineFirstCoreGraphVisi
    }
 
    @Override
-   public void endGraph(CoreGraph coreGraph) {
-      for (Variable variable : coreGraph.getGrammar().getVariables()) {
-         final VariableNode variableNode = coreGraph.getVariableNode(variable);
-         getFollow(new Stack<>(), coreGraph, variableNode);
+   public void endGraph(GrammarGraph grammarGraph) {
+      for (Variable variable : grammarGraph.getGrammar().getVariables()) {
+         final VariableNode variableNode = grammarGraph.getVariableNode(variable);
+         getFollow(new Stack<>(), grammarGraph, variableNode);
       }
    }
 
-   private Set<Terminal> getFollow(Stack<VariableNode> trace, CoreGraph graph, VariableNode referencedNode) {
+   private Set<Terminal> getFollow(Stack<VariableNode> trace, GrammarGraph graph, VariableNode referencedNode) {
 
       if (trace.contains(referencedNode)) {
          throw new IllegalStateException("Cannot determine follow set because of recursion in " + trace.toString());
@@ -69,7 +69,7 @@ public class DetermineFollowCoreGraphVisitor extends DetermineFirstCoreGraphVisi
       return follow;
    }
 
-   private void addFollow(Stack<VariableNode> trace, CoreGraph graph, Set<Terminal> follow,
+   private void addFollow(Stack<VariableNode> trace, GrammarGraph graph, Set<Terminal> follow,
       ProductionNode referencingAlt, VariableNode referencedNode) {
       final List<AbstractSymbolNode> nodes = referencingAlt.getRightSideNodes();
 

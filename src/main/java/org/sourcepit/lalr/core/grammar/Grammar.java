@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class CoreGrammar {
+public class Grammar {
    private final List<Variable> variables;
 
    private final List<Terminal> terminals;
@@ -40,11 +40,11 @@ public class CoreGrammar {
 
    private final Variable startSymbol;
 
-   public CoreGrammar(List<Production> productions) {
+   public Grammar(List<Production> productions) {
       this(productions, productions.get(0).getLeftSide());
    }
 
-   public CoreGrammar(List<Production> productions, Variable startSymbol) {
+   public Grammar(List<Production> productions, Variable startSymbol) {
       notEmpty(productions);
       noDupliatedElements(productions);
 

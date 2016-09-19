@@ -29,7 +29,7 @@ import java.util.Set;
 import org.sourcepit.lalr.core.grammar.Terminal;
 import org.sourcepit.lalr.core.grammar.Variable;
 
-public class DetermineFirstCoreGraphVisitor extends AbstractCoreGraphVisitor {
+public class DetermineFirstGrammarGraphVisitor extends AbstractGrammarGraphVisitor {
 
    private final Map<Variable, Set<Terminal>> symbolToFirst = new HashMap<>();
 
@@ -95,7 +95,7 @@ public class DetermineFirstCoreGraphVisitor extends AbstractCoreGraphVisitor {
    }
 
    @Override
-   public void endGraph(CoreGraph coreGraph) {
+   public void endGraph(GrammarGraph grammarGraph) {
       for (Runnable r : delayed) {
          r.run();
       }

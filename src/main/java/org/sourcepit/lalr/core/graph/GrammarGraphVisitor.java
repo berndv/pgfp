@@ -18,9 +18,9 @@ package org.sourcepit.lalr.core.graph;
 
 import java.util.List;
 
-public interface CoreGraphVisitor {
+public interface GrammarGraphVisitor {
 
-   void startGraph(CoreGraph coreGraph);
+   void startGraph(GrammarGraph grammarGraph);
 
    boolean startVariableNode(VariableNode variableNode);
 
@@ -34,6 +34,6 @@ public interface CoreGraphVisitor {
 
    void endVariableNode(VariableNode variableNode);
 
-   void endGraph(CoreGraph coreGraph);
+   void endGraph(GrammarGraph grammarGraph);
 
 }

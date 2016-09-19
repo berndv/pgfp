@@ -24,12 +24,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
-import org.sourcepit.lalr.core.grammar.CoreGrammar;
+import org.sourcepit.lalr.core.grammar.Grammar;
 import org.sourcepit.lalr.core.grammar.CoreSyntax;
 import org.sourcepit.lalr.core.grammar.Production;
 import org.sourcepit.lalr.core.grammar.SimpleCoreSyntax;
 
-public class CoreGraphTest {
+public class GrammarGraphTest {
    private final CoreSyntax syntax = new SimpleCoreSyntax();
 
    @Test
@@ -44,7 +44,7 @@ public class CoreGraphTest {
       productions.add(syntax.parseProduction("C = ε"));
       productions.add(syntax.parseProduction("D = ε"));
 
-      CoreGraph graph = new CoreGraph(new CoreGrammar(productions));
+      GrammarGraph graph = new GrammarGraph(new Grammar(productions));
 
       assertFalse(graph.getVariableNode(productions.get(0).getLeftSide()).isNullable());
       assertTrue(graph.getVariableNode(productions.get(1).getLeftSide()).isNullable());
@@ -60,7 +60,7 @@ public class CoreGraphTest {
       productions.add(syntax.parseProduction("C = ε"));
       productions.add(syntax.parseProduction("D = d"));
 
-      graph = new CoreGraph(new CoreGrammar(productions));
+      graph = new GrammarGraph(new Grammar(productions));
 
       assertFalse(graph.getVariableNode(productions.get(0).getLeftSide()).isNullable());
       assertFalse(graph.getVariableNode(productions.get(1).getLeftSide()).isNullable());
@@ -72,7 +72,7 @@ public class CoreGraphTest {
       productions.add(syntax.parseProduction("A = a"));
       productions.add(syntax.parseProduction("A = ε"));
 
-      graph = new CoreGraph(new CoreGrammar(productions));
+      graph = new GrammarGraph(new Grammar(productions));
 
       assertTrue(graph.getVariableNode(productions.get(0).getLeftSide()).isNullable());
       assertTrue(graph.getVariableNode(productions.get(1).getLeftSide()).isNullable());
@@ -90,7 +90,7 @@ public class CoreGraphTest {
       productions.add(syntax.parseProduction("B = b"));
       productions.add(syntax.parseProduction("B = ε"));
 
-      CoreGraph graph = new CoreGraph(new CoreGrammar(productions));
+      GrammarGraph graph = new GrammarGraph(new Grammar(productions));
 
       VariableNode s = graph.getVariableNode("S");
       VariableNode a = graph.getVariableNode("A");
@@ -110,8 +110,8 @@ public class CoreGraphTest {
       List<VariableNode> visited = new ArrayList<>();
       List<List<Object>> recursions = new ArrayList<>();
 
-      CoreGraph graph = new CoreGraph(new CoreGrammar(productions));
-      graph.accept(new AbstractCoreGraphVisitor(false) {
+      GrammarGraph graph = new GrammarGraph(new Grammar(productions));
+      graph.accept(new AbstractGrammarGraphVisitor(false) {
          @Override
          public void visitRecursion(List<Object> trace) {
             recursions.add(trace);

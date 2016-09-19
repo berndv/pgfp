@@ -20,22 +20,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public abstract class AbstractCoreGraphVisitor implements CoreGraphVisitor {
+public abstract class AbstractGrammarGraphVisitor implements GrammarGraphVisitor {
 
    protected Set<VariableNode> visted;
 
    protected final boolean skipVisited;
 
-   public AbstractCoreGraphVisitor() {
+   public AbstractGrammarGraphVisitor() {
       this(true);
    }
 
-   public AbstractCoreGraphVisitor(boolean skipVisited) {
+   public AbstractGrammarGraphVisitor(boolean skipVisited) {
       this.skipVisited = skipVisited;
    }
 
    @Override
-   public void startGraph(CoreGraph coreGraph) {
+   public void startGraph(GrammarGraph grammarGraph) {
       if (skipVisited) {
          visted = new HashSet<>();
       }
@@ -84,7 +84,7 @@ public abstract class AbstractCoreGraphVisitor implements CoreGraphVisitor {
    }
 
    @Override
-   public void endGraph(CoreGraph coreGraph) {
+   public void endGraph(GrammarGraph grammarGraph) {
       visted = null;
    }
 

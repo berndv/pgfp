@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
-import org.sourcepit.lalr.core.grammar.CoreGrammar;
+import org.sourcepit.lalr.core.grammar.Grammar;
 import org.sourcepit.lalr.core.grammar.CoreSyntax;
 import org.sourcepit.lalr.core.grammar.Production;
 import org.sourcepit.lalr.core.grammar.SimpleCoreSyntax;
@@ -49,9 +49,9 @@ public class FollowTest {
       productions.add(syntax.parseProduction("E = e"));
       productions.add(syntax.parseProduction("E = ε"));
 
-      CoreGraph graph = new CoreGraph(new CoreGrammar(productions));
+      GrammarGraph graph = new GrammarGraph(new Grammar(productions));
 
-      DetermineFollowCoreGraphVisitor visitor = new DetermineFollowCoreGraphVisitor();
+      DetermineFollowGrammarGraphVisitor visitor = new DetermineFollowGrammarGraphVisitor();
       graph.accept(visitor);
 
       Map<Variable, Set<Terminal>> symbolToFollow = visitor.getSymbolToFollow();
@@ -81,9 +81,9 @@ public class FollowTest {
       productions.add(syntax.parseProduction("C = c C"));
       productions.add(syntax.parseProduction("C = ε"));
 
-      CoreGraph graph = new CoreGraph(new CoreGrammar(productions));
+      GrammarGraph graph = new GrammarGraph(new Grammar(productions));
 
-      DetermineFollowCoreGraphVisitor visitor = new DetermineFollowCoreGraphVisitor();
+      DetermineFollowGrammarGraphVisitor visitor = new DetermineFollowGrammarGraphVisitor();
       graph.accept(visitor);
 
       Map<Variable, Set<Terminal>> symbolToFollow = visitor.getSymbolToFollow();
@@ -109,9 +109,9 @@ public class FollowTest {
       productions.add(syntax.parseProduction("F = id"));
       productions.add(syntax.parseProduction("F = lp E rp"));
 
-      CoreGraph graph = new CoreGraph(new CoreGrammar(productions));
+      GrammarGraph graph = new GrammarGraph(new Grammar(productions));
 
-      DetermineFollowCoreGraphVisitor visitor = new DetermineFollowCoreGraphVisitor();
+      DetermineFollowGrammarGraphVisitor visitor = new DetermineFollowGrammarGraphVisitor();
       graph.accept(visitor);
 
       Map<Variable, Set<Terminal>> symbolToFollow = visitor.getSymbolToFollow();
@@ -142,9 +142,9 @@ public class FollowTest {
       productions.add(syntax.parseProduction("C = h"));
       productions.add(syntax.parseProduction("C = ε"));
 
-      CoreGraph graph = new CoreGraph(new CoreGrammar(productions));
+      GrammarGraph graph = new GrammarGraph(new Grammar(productions));
 
-      DetermineFollowCoreGraphVisitor visitor = new DetermineFollowCoreGraphVisitor();
+      DetermineFollowGrammarGraphVisitor visitor = new DetermineFollowGrammarGraphVisitor();
       graph.accept(visitor);
 
       Map<Variable, Set<Terminal>> symbolToFollow = visitor.getSymbolToFollow();
@@ -169,9 +169,9 @@ public class FollowTest {
       productions.add(syntax.parseProduction("B = d"));
       productions.add(syntax.parseProduction("B = ε"));
 
-      CoreGraph graph = new CoreGraph(new CoreGrammar(productions));
+      GrammarGraph graph = new GrammarGraph(new Grammar(productions));
 
-      DetermineFollowCoreGraphVisitor visitor = new DetermineFollowCoreGraphVisitor();
+      DetermineFollowGrammarGraphVisitor visitor = new DetermineFollowGrammarGraphVisitor();
       graph.accept(visitor);
 
       Map<Variable, Set<Terminal>> symbolToFollow = visitor.getSymbolToFollow();
@@ -197,9 +197,9 @@ public class FollowTest {
       productions.add(syntax.parseProduction("B = b"));
       productions.add(syntax.parseProduction("B = ε"));
 
-      CoreGraph graph = new CoreGraph(new CoreGrammar(productions));
+      GrammarGraph graph = new GrammarGraph(new Grammar(productions));
 
-      DetermineFollowCoreGraphVisitor visitor = new DetermineFollowCoreGraphVisitor();
+      DetermineFollowGrammarGraphVisitor visitor = new DetermineFollowGrammarGraphVisitor();
 
       try {
          graph.accept(visitor);
@@ -216,9 +216,9 @@ public class FollowTest {
       productions.add(syntax.parseProduction("S = f"));
       productions.add(syntax.parseProduction("S = ε"));
 
-      CoreGraph graph = new CoreGraph(new CoreGrammar(productions));
+      GrammarGraph graph = new GrammarGraph(new Grammar(productions));
 
-      DetermineFollowCoreGraphVisitor visitor = new DetermineFollowCoreGraphVisitor();
+      DetermineFollowGrammarGraphVisitor visitor = new DetermineFollowGrammarGraphVisitor();
       graph.accept(visitor);
 
       Map<Variable, Set<Terminal>> symbolToFollow = visitor.getSymbolToFollow();

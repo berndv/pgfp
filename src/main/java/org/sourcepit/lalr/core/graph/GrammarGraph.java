@@ -24,20 +24,20 @@ import java.util.Stack;
 
 import org.apache.commons.lang.Validate;
 import org.sourcepit.lalr.core.grammar.AbstractSymbol;
-import org.sourcepit.lalr.core.grammar.CoreGrammar;
+import org.sourcepit.lalr.core.grammar.Grammar;
 import org.sourcepit.lalr.core.grammar.Production;
 import org.sourcepit.lalr.core.grammar.Terminal;
 import org.sourcepit.lalr.core.grammar.Variable;
 
-public class CoreGraph {
+public class GrammarGraph {
 
-   private final CoreGrammar grammar;
+   private final Grammar grammar;
 
    private final Map<Variable, VariableNode> variableNodes = new HashMap<>();
 
    private final Map<Terminal, TerminalNode> terminalNodes = new HashMap<>();
 
-   public CoreGraph(CoreGrammar grammar) {
+   public GrammarGraph(Grammar grammar) {
       this.grammar = grammar;
 
       for (Variable variable : grammar.getVariables()) {
@@ -77,10 +77,10 @@ public class CoreGraph {
             }
          }
       }
-      accept(new DetermineNullableCoreGraphVisitor());
+      accept(new DetermineNullableGrammarGraphVisitor());
    }
 
-   public CoreGrammar getGrammar() {
+   public Grammar getGrammar() {
       return grammar;
    }
 
@@ -97,12 +97,12 @@ public class CoreGraph {
       return terminalNodes.get(symbol);
    }
 
-   public void accept(CoreGraphVisitor visitor) {
+   public void accept(GrammarGraphVisitor visitor) {
       Stack<Object> trace = new Stack<>();
       accept(trace, this, visitor);
    }
 
-   private void accept(Stack<Object> trace, CoreGraph graph, CoreGraphVisitor visitor) {
+   private void accept(Stack<Object> trace, GrammarGraph graph, GrammarGraphVisitor visitor) {
       visitor.startGraph(this);
       for (Variable variable : graph.getGrammar().getVariables()) {
          accept(trace, graph.getVariableNode(variable), visitor);
@@ -110,7 +110,7 @@ public class CoreGraph {
       visitor.endGraph(this);
    }
 
-   private void accept(Stack<Object> trace, VariableNode variableNode, CoreGraphVisitor visitor) {
+   private void accept(Stack<Object> trace, VariableNode variableNode, GrammarGraphVisitor visitor) {
 
       if (trace.contains(variableNode)) {
          visitor.visitRecursion(new ArrayList<>(trace));
