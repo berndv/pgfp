@@ -54,6 +54,7 @@ public class GrammarGraph {
          for (Production production : grammar.getProductions(variable)) {
             ProductionNode alt = new ProductionNode();
             alt.setParent(variableNode);
+            alt.setProduction(production);
             variableNode.getProductionNodes().add(alt);
 
             for (AbstractSymbol symbol : production.getRightSide()) {

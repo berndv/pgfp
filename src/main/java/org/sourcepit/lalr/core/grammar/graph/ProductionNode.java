@@ -19,11 +19,23 @@ package org.sourcepit.lalr.core.grammar.graph;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sourcepit.lalr.core.grammar.Production;
+
 public class ProductionNode {
+
+   private Production production;
 
    private VariableNode parent;
 
    private final List<AbstractSymbolNode> rightSideNodes = new ArrayList<>();
+
+   public void setProduction(Production production) {
+      this.production = production;
+   }
+
+   public Production getProduction() {
+      return production;
+   }
 
    public void setParent(VariableNode parent) {
       this.parent = parent;
