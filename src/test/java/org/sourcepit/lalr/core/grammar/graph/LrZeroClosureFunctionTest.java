@@ -83,7 +83,7 @@ public class LrZeroClosureFunctionTest {
       List<Production> productions = new ArrayList<>();
       productions.add(syntax.parseProduction("S = A A"));
       productions.add(syntax.parseProduction("A = a A"));
-      productions.add(syntax.parseProduction("A = ε"));
+      productions.add(syntax.parseProduction("A = "));
 
       Grammar grammar = new Grammar(productions);
 

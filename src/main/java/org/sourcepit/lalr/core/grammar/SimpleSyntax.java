@@ -31,6 +31,8 @@ import java.util.StringTokenizer;
 
 public class SimpleSyntax implements Syntax {
 
+   private static final Terminal EOF = new Terminal("$");
+
    @Override
    public Variable createVariable(String name) throws IllegalArgumentException {
       return (Variable) createSymbol(VARIABLE, name);
@@ -39,6 +41,11 @@ public class SimpleSyntax implements Syntax {
    @Override
    public Terminal createTerminal(String name) throws IllegalArgumentException {
       return (Terminal) createSymbol(TERMINAL, name);
+   }
+
+   @Override
+   public Terminal getEofTerminal() {
+      return EOF;
    }
 
    @Override
@@ -57,6 +64,9 @@ public class SimpleSyntax implements Syntax {
    @Override
    public AbstractSymbol parseSymbol(String str) throws IllegalArgumentException {
       notEmpty(str, "Symbol must not be empty");
+      if ("$".equals(str)) {
+         return getEofTerminal();
+      }
       final int firstCP = str.codePointAt(0);
       validateFirstCodePoint(str, firstCP);
       final SymbolType type;
@@ -74,7 +84,10 @@ public class SimpleSyntax implements Syntax {
 
    static void validateSymbolName(SymbolType type, String name) throws IllegalArgumentException {
       notEmpty(name, "Symbol names must not be null or empty");
-      isTrue(!"\u03B5".equals(name), "'\u03B5' is reserved and cannot be used as symbol name");
+
+      if (type == TERMINAL && "$".equals(name)) {
+         return;
+      }
 
       final OfInt codePoints = name.codePoints().iterator();
 
@@ -119,7 +132,7 @@ public class SimpleSyntax implements Syntax {
       str.append(leftSide);
       str.append(" =");
       if (rightSide.isEmpty()) {
-         str.append(" \u03B5");
+         str.append(" ");
       }
       else {
          for (AbstractSymbol symbol : rightSide) {
@@ -145,18 +158,16 @@ public class SimpleSyntax implements Syntax {
    }
 
    private static List<AbstractSymbol> rightSide(Syntax syntax, StringTokenizer tokenizer) {
-      isTrue(tokenizer.hasMoreElements(), "Symbol expected on the right-hand side");
       List<AbstractSymbol> symbols = new ArrayList<>();
-      String t = tokenizer.nextToken();
-      if (!"\u03B5".equals(t)) {
-         AbstractSymbol symbol = syntax.parseSymbol(t);
-         symbols.add(symbol);
+      if (tokenizer.hasMoreElements()) {
+         while (tokenizer.hasMoreElements()) {
+            String t = tokenizer.nextToken();
+            symbols.add(syntax.parseSymbol(t));
+         }
       }
-      while (tokenizer.hasMoreElements()) {
-         t = tokenizer.nextToken();
-         isTrue(!"\u03B5".equals(t), "Empty word char '\u03B5' must only occur alone");
-         symbols.add(syntax.parseSymbol(t));
-      }
+      int idx = symbols.indexOf(EOF);
+      isTrue(idx < 0 || idx == symbols.size() - 1,
+         "EOF terminal '" + EOF + "' may only occur at the end of the right-hand side");
       return symbols;
    }
 }

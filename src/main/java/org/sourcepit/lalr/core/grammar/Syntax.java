@@ -24,6 +24,8 @@ public interface Syntax {
    Variable createVariable(String name) throws IllegalArgumentException;
 
    Terminal createTerminal(String name) throws IllegalArgumentException;
+   
+   Terminal getEofTerminal();
 
    AbstractSymbol parseSymbol(String str) throws IllegalArgumentException;
 

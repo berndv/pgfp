@@ -46,8 +46,8 @@ public class NullableTest {
       productions.add(syntax.parseProduction("B = b"));
       productions.add(syntax.parseProduction("C = C"));
       productions.add(syntax.parseProduction("C = c"));
-      productions.add(syntax.parseProduction("C = ε"));
-      productions.add(syntax.parseProduction("D = ε"));
+      productions.add(syntax.parseProduction("C = "));
+      productions.add(syntax.parseProduction("D = "));
 
       GrammarGraph graph = newGrammarGraph(productions);
 
@@ -62,7 +62,7 @@ public class NullableTest {
       productions.add(syntax.parseProduction("B = b"));
       productions.add(syntax.parseProduction("C = C"));
       productions.add(syntax.parseProduction("C = c"));
-      productions.add(syntax.parseProduction("C = ε"));
+      productions.add(syntax.parseProduction("C = "));
       productions.add(syntax.parseProduction("D = d"));
 
       graph = newGrammarGraph(productions);
@@ -75,7 +75,7 @@ public class NullableTest {
       productions = new ArrayList<>();
       productions.add(syntax.parseProduction("S = A S"));
       productions.add(syntax.parseProduction("A = a"));
-      productions.add(syntax.parseProduction("A = ε"));
+      productions.add(syntax.parseProduction("A = "));
 
       graph = newGrammarGraph(productions);
 

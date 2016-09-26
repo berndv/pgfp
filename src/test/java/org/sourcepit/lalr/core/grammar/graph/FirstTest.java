@@ -49,14 +49,14 @@ public class FirstTest {
       List<Production> productions = new ArrayList<>();
       productions.add(syntax.parseProduction("S = A B C D E"));
       productions.add(syntax.parseProduction("A = a"));
-      productions.add(syntax.parseProduction("A = ε"));
+      productions.add(syntax.parseProduction("A = "));
       productions.add(syntax.parseProduction("B = b"));
-      productions.add(syntax.parseProduction("B = ε"));
+      productions.add(syntax.parseProduction("B = "));
       productions.add(syntax.parseProduction("C = c"));
       productions.add(syntax.parseProduction("D = d"));
-      productions.add(syntax.parseProduction("D = ε"));
+      productions.add(syntax.parseProduction("D = "));
       productions.add(syntax.parseProduction("E = e"));
-      productions.add(syntax.parseProduction("E = ε"));
+      productions.add(syntax.parseProduction("E = "));
 
       GrammarGraph graph = newGrammarGraph(productions);
 
@@ -86,9 +86,9 @@ public class FirstTest {
       productions.add(syntax.parseProduction("S = B b"));
       productions.add(syntax.parseProduction("S = C d"));
       productions.add(syntax.parseProduction("B = a B"));
-      productions.add(syntax.parseProduction("B = ε"));
+      productions.add(syntax.parseProduction("B = "));
       productions.add(syntax.parseProduction("C = c C"));
-      productions.add(syntax.parseProduction("C = ε"));
+      productions.add(syntax.parseProduction("C = "));
 
       GrammarGraph graph = newGrammarGraph(productions);
 
@@ -111,10 +111,10 @@ public class FirstTest {
       List<Production> productions = new ArrayList<>();
       productions.add(syntax.parseProduction("E = T EE"));
       productions.add(syntax.parseProduction("EE = plus T EE"));
-      productions.add(syntax.parseProduction("EE = ε"));
+      productions.add(syntax.parseProduction("EE = "));
       productions.add(syntax.parseProduction("T = F TT"));
       productions.add(syntax.parseProduction("TT = star F TT"));
-      productions.add(syntax.parseProduction("TT = ε"));
+      productions.add(syntax.parseProduction("TT = "));
       productions.add(syntax.parseProduction("F = id"));
       productions.add(syntax.parseProduction("F = lp E rp"));
 
@@ -147,9 +147,9 @@ public class FirstTest {
       productions.add(syntax.parseProduction("A = d a"));
       productions.add(syntax.parseProduction("A = B C"));
       productions.add(syntax.parseProduction("B = g"));
-      productions.add(syntax.parseProduction("B = ε"));
+      productions.add(syntax.parseProduction("B = "));
       productions.add(syntax.parseProduction("C = h"));
-      productions.add(syntax.parseProduction("C = ε"));
+      productions.add(syntax.parseProduction("C = "));
 
       GrammarGraph graph = newGrammarGraph(productions);
 
@@ -174,9 +174,9 @@ public class FirstTest {
       List<Production> productions = new ArrayList<>();
       productions.add(syntax.parseProduction("S = a A B b"));
       productions.add(syntax.parseProduction("A = c"));
-      productions.add(syntax.parseProduction("A = ε"));
+      productions.add(syntax.parseProduction("A = "));
       productions.add(syntax.parseProduction("B = d"));
-      productions.add(syntax.parseProduction("B = ε"));
+      productions.add(syntax.parseProduction("B = "));
 
       GrammarGraph graph = newGrammarGraph(productions);
 
@@ -201,10 +201,10 @@ public class FirstTest {
       productions.add(syntax.parseProduction("S = B"));
       productions.add(syntax.parseProduction("A = B"));
       productions.add(syntax.parseProduction("A = a"));
-      productions.add(syntax.parseProduction("A = ε"));
+      productions.add(syntax.parseProduction("A = "));
       productions.add(syntax.parseProduction("B = A"));
       productions.add(syntax.parseProduction("B = b"));
-      productions.add(syntax.parseProduction("B = ε"));
+      productions.add(syntax.parseProduction("B = "));
 
       GrammarGraph graph = newGrammarGraph(productions);
 
@@ -222,7 +222,7 @@ public class FirstTest {
       List<Production> productions = new ArrayList<>();
       productions.add(syntax.parseProduction("S = S s"));
       productions.add(syntax.parseProduction("S = f"));
-      productions.add(syntax.parseProduction("S = ε"));
+      productions.add(syntax.parseProduction("S = "));
 
       GrammarGraph graph = newGrammarGraph(productions);
 

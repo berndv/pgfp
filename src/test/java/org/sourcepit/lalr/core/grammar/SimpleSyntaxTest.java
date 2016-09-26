@@ -34,15 +34,24 @@ public class SimpleSyntaxTest {
    @Test
    public void testParseProductionEpsilon() {
       Syntax syntax = new SimpleSyntax();
-      Production p = syntax.parseProduction("S = \u03B5");
+      Production p = syntax.parseProduction("S = ");
       assertTrue(p.isEmpty());
-      assertEquals("S = ε", p.toString());
+      assertEquals("S = ", p.toString());
+   }
 
+   @Test
+   public void testEof() {
+      Syntax syntax = new SimpleSyntax();
+      Terminal eof = syntax.createTerminal("$");
+      assertEquals(syntax.getEofTerminal(), eof);
+
+      syntax.parseProduction("S = s $");
       try {
-         syntax.parseProduction("S = f \u03B5");
+         syntax.parseProduction("S = $ s");
+         fail();
       }
       catch (IllegalArgumentException e) {
-         assertEquals("Empty word char 'ε' must only occur alone", e.getMessage());
+         assertEquals("EOF terminal '$' may only occur at the end of the right-hand side", e.getMessage());
       }
    }
 
@@ -81,13 +90,7 @@ public class SimpleSyntaxTest {
    @Test
    public void testParseProductionNoRightHandSide() {
       Syntax syntax = new SimpleSyntax();
-      try {
-         syntax.parseProduction("S = ");
-         fail();
-      }
-      catch (IllegalArgumentException e) {
-         assertEquals("Symbol expected on the right-hand side", e.getMessage());
-      }
+      assertTrue(syntax.parseProduction("S = ").isEmpty());
    }
 
    @Test
@@ -173,7 +176,7 @@ public class SimpleSyntaxTest {
          fail();
       }
       catch (IllegalArgumentException e) {
-         assertEquals("'ε' is reserved and cannot be used as symbol name", e.getMessage());
+         assertEquals("First char of variable 'ε' must be upper case", e.getMessage());
       }
       try {
          SimpleSyntax.validateSymbolName(VARIABLE, "f");
@@ -200,13 +203,7 @@ public class SimpleSyntaxTest {
       SimpleSyntax.validateSymbolName(TERMINAL, "f");
       SimpleSyntax.validateSymbolName(TERMINAL, "foo");
       SimpleSyntax.validateSymbolName(TERMINAL, "foO");
-      try {
-         SimpleSyntax.validateSymbolName(TERMINAL, "ε");
-         fail();
-      }
-      catch (IllegalArgumentException e) {
-         assertEquals("'ε' is reserved and cannot be used as symbol name", e.getMessage());
-      }
+      SimpleSyntax.validateSymbolName(TERMINAL, "ε");
       try {
          SimpleSyntax.validateSymbolName(TERMINAL, "F");
          fail();
@@ -214,13 +211,7 @@ public class SimpleSyntaxTest {
       catch (IllegalArgumentException e) {
          assertEquals("First char of terminal symbol 'F' must be lower case", e.getMessage());
       }
-      try {
-         SimpleSyntax.validateSymbolName(TERMINAL, "$");
-         fail();
-      }
-      catch (IllegalArgumentException e) {
-         assertEquals("First char of symbol '$' must be a valid unicode identifier start char", e.getMessage());
-      }
+      SimpleSyntax.validateSymbolName(TERMINAL, "$");
       try {
          SimpleSyntax.validateSymbolName(TERMINAL, "foo$");
          fail();
