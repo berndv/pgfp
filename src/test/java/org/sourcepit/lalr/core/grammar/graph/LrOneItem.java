@@ -19,6 +19,7 @@ package org.sourcepit.lalr.core.grammar.graph;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
 import org.sourcepit.lalr.core.grammar.Production;
 import org.sourcepit.lalr.core.grammar.Terminal;
 
@@ -40,6 +41,8 @@ public class LrOneItem {
    }
 
    public LrOneItem(LrZeroItem lrZeroItem, Set<Terminal> lookahead) {
+      Validate.notNull(lrZeroItem);
+      Validate.noNullElements(lookahead);
       this.lrZeroItem = lrZeroItem;
       this.lookahead = lookahead;
    }

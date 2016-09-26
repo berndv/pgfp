@@ -87,7 +87,7 @@ public class LrOneGotoFunctionTest {
 
       // START = .S, $
       inputItems = new LinkedHashSet<>();
-      inputItems.add(LrOneItem.create(pStart, 0, (Terminal) null));
+      inputItems.add(LrOneItem.create(pStart, 0, syntax.getEofTerminal()));
 
 
       List<Set<LrOneItem>> states = new ArrayList<>();

@@ -162,12 +162,11 @@ public class SimpleSyntax implements Syntax {
       if (tokenizer.hasMoreElements()) {
          while (tokenizer.hasMoreElements()) {
             String t = tokenizer.nextToken();
-            symbols.add(syntax.parseSymbol(t));
+            AbstractSymbol s = syntax.parseSymbol(t);
+            isTrue(!EOF.equals(s), "EOF terminal not allowed in productions");
+            symbols.add(s);
          }
       }
-      int idx = symbols.indexOf(EOF);
-      isTrue(idx < 0 || idx == symbols.size() - 1,
-         "EOF terminal '" + EOF + "' may only occur at the end of the right-hand side");
       return symbols;
    }
 }

@@ -44,14 +44,12 @@ public class SimpleSyntaxTest {
       Syntax syntax = new SimpleSyntax();
       Terminal eof = syntax.createTerminal("$");
       assertEquals(syntax.getEofTerminal(), eof);
-
-      syntax.parseProduction("S = s $");
       try {
-         syntax.parseProduction("S = $ s");
+         syntax.parseProduction("S = s $");
          fail();
       }
       catch (IllegalArgumentException e) {
-         assertEquals("EOF terminal '$' may only occur at the end of the right-hand side", e.getMessage());
+         assertEquals("EOF terminal not allowed in productions", e.getMessage());
       }
    }
 

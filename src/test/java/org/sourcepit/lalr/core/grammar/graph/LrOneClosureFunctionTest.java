@@ -77,38 +77,40 @@ public class LrOneClosureFunctionTest {
 
       LrOneClosureFunction cf = new LrOneClosureFunction();
 
+      final Terminal eof = syntax.getEofTerminal();
+
       Set<LrOneItem> inputItems;
       Set<LrOneItem> closure;
 
       // START = .S, $
       inputItems = new LinkedHashSet<>();
-      inputItems.add(LrOneItem.create(pStart, 0, (Terminal) null));
+      inputItems.add(LrOneItem.create(pStart, 0, eof));
       closure = cf.apply(graph, inputItems);
-      assertEquals("[START = .S, [null], S = .A A, [null], A = .a A, [a, b], A = .b, [a, b]]", closure.toString());
+      assertEquals("[START = .S, [$], S = .A A, [$], A = .a A, [a, b], A = .b, [a, b]]", closure.toString());
 
       // START = S., $
       inputItems = new LinkedHashSet<>();
-      inputItems.add(LrOneItem.create(pStart, 1, (Terminal) null));
+      inputItems.add(LrOneItem.create(pStart, 1, eof));
       closure = cf.apply(graph, inputItems);
-      assertEquals("[START = S., [null]]", closure.toString());
+      assertEquals("[START = S., [$]]", closure.toString());
 
       // S = A .A, $
       inputItems = new LinkedHashSet<>();
-      inputItems.add(LrOneItem.create(pS, 1, (Terminal) null));
+      inputItems.add(LrOneItem.create(pS, 1, eof));
       closure = cf.apply(graph, inputItems);
-      assertEquals("[S = A .A, [null], A = .a A, [null], A = .b, [null]]", closure.toString());
+      assertEquals("[S = A .A, [$], A = .a A, [$], A = .b, [$]]", closure.toString());
 
       // S = A A., $
       inputItems = new LinkedHashSet<>();
-      inputItems.add(LrOneItem.create(pS, 2, (Terminal) null));
+      inputItems.add(LrOneItem.create(pS, 2, eof));
       closure = cf.apply(graph, inputItems);
-      assertEquals("[S = A A., [null]]", closure.toString());
+      assertEquals("[S = A A., [$]]", closure.toString());
 
       // A = a .A, $
       inputItems = new LinkedHashSet<>();
-      inputItems.add(LrOneItem.create(pA1, 1, (Terminal) null));
+      inputItems.add(LrOneItem.create(pA1, 1, eof));
       closure = cf.apply(graph, inputItems);
-      assertEquals("[A = a .A, [null], A = .a A, [null], A = .b, [null]]", closure.toString());
+      assertEquals("[A = a .A, [$], A = .a A, [$], A = .b, [$]]", closure.toString());
 
       // A = a .A, a, b
       inputItems = new LinkedHashSet<>();
@@ -124,9 +126,9 @@ public class LrOneClosureFunctionTest {
 
       // A = b., $
       inputItems = new LinkedHashSet<>();
-      inputItems.add(LrOneItem.create(pA2, 1, (Terminal) null));
+      inputItems.add(LrOneItem.create(pA2, 1, eof));
       closure = cf.apply(graph, inputItems);
-      assertEquals("[A = b., [null]]", closure.toString());
+      assertEquals("[A = b., [$]]", closure.toString());
 
       // A = b., a, b
       inputItems = new LinkedHashSet<>();
@@ -168,11 +170,13 @@ public class LrOneClosureFunctionTest {
       Set<LrOneItem> inputItems;
       Set<LrOneItem> closure;
 
+      final Terminal eof = syntax.getEofTerminal();
+
       inputItems = new LinkedHashSet<>();
-      inputItems.add(LrOneItem.create(pS1, 0, (Terminal) null));
-      inputItems.add(LrOneItem.create(pS2, 0, (Terminal) null));
+      inputItems.add(LrOneItem.create(pS1, 0, eof));
+      inputItems.add(LrOneItem.create(pS2, 0, eof));
       closure = cf.apply(graph, inputItems);
-      assertEquals("[S = .A b, [null], S = .A c, [null], A = .a, [b, c]]", closure.toString());
+      assertEquals("[S = .A b, [$], S = .A c, [$], A = .a, [b, c]]", closure.toString());
    }
 
    @Test
@@ -225,12 +229,14 @@ public class LrOneClosureFunctionTest {
       Set<LrOneItem> inputItems;
       Set<LrOneItem> closure;
 
+      final Terminal eof = syntax.getEofTerminal();
+
       inputItems = new LinkedHashSet<>();
-      inputItems.add(LrOneItem.create(pS1, 0, (Terminal) null));
-      inputItems.add(LrOneItem.create(pS2, 0, (Terminal) null));
+      inputItems.add(LrOneItem.create(pS1, 0, eof));
+      inputItems.add(LrOneItem.create(pS2, 0, eof));
       closure = cf.apply(graph, inputItems);
       assertEquals(
-         "[S = .A, [null], S = .A s, [null], A = .B, [null, s], B = .b, [null, s, c, d], A = .a, [null, s], A = .B c, [null, s], A = .B d, [null, s]]",
+         "[S = .A, [$], S = .A s, [$], A = .B, [$, s], B = .b, [$, s, c, d], A = .a, [$, s], A = .B c, [$, s], A = .B d, [$, s]]",
          closure.toString());
    }
 
