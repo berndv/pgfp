@@ -16,14 +16,28 @@
 
 package org.sourcepit.lalr.core.grammar.graph;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.sourcepit.lalr.core.grammar.Production;
 import org.sourcepit.lalr.core.grammar.Terminal;
 
 public class LrOneItem {
    private final LrZeroItem lrZeroItem;
 
    private final Set<Terminal> lookahead;
+
+   public static LrOneItem create(Production production, int dot, Terminal... lookahead) {
+      return create(new LrZeroItem(production, dot), lookahead);
+   }
+
+   public static LrOneItem create(LrZeroItem zItem, Terminal... lookahead) {
+      final Set<Terminal> lookaheadSet = new LinkedHashSet<>();
+      for (Terminal terminal : lookahead) {
+         lookaheadSet.add(terminal);
+      }
+      return new LrOneItem(zItem, lookaheadSet);
+   }
 
    public LrOneItem(LrZeroItem lrZeroItem, Set<Terminal> lookahead) {
       this.lrZeroItem = lrZeroItem;

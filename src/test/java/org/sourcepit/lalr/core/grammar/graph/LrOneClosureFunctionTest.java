@@ -82,69 +82,57 @@ public class LrOneClosureFunctionTest {
 
       // START = .S, $
       inputItems = new LinkedHashSet<>();
-      inputItems.add(newLrOneItem(pStart, 0, (Terminal) null));
+      inputItems.add(LrOneItem.create(pStart, 0, (Terminal) null));
       closure = cf.apply(graph, inputItems);
       assertEquals("[START = .S, [null], S = .A A, [null], A = .a A, [a, b], A = .b, [a, b]]", closure.toString());
 
       // START = S., $
       inputItems = new LinkedHashSet<>();
-      inputItems.add(newLrOneItem(pStart, 1, (Terminal) null));
+      inputItems.add(LrOneItem.create(pStart, 1, (Terminal) null));
       closure = cf.apply(graph, inputItems);
       assertEquals("[START = S., [null]]", closure.toString());
 
       // S = A .A, $
       inputItems = new LinkedHashSet<>();
-      inputItems.add(newLrOneItem(pS, 1, (Terminal) null));
+      inputItems.add(LrOneItem.create(pS, 1, (Terminal) null));
       closure = cf.apply(graph, inputItems);
       assertEquals("[S = A .A, [null], A = .a A, [null], A = .b, [null]]", closure.toString());
 
       // S = A A., $
       inputItems = new LinkedHashSet<>();
-      inputItems.add(newLrOneItem(pS, 2, (Terminal) null));
+      inputItems.add(LrOneItem.create(pS, 2, (Terminal) null));
       closure = cf.apply(graph, inputItems);
       assertEquals("[S = A A., [null]]", closure.toString());
 
       // A = a .A, $
       inputItems = new LinkedHashSet<>();
-      inputItems.add(newLrOneItem(pA1, 1, (Terminal) null));
+      inputItems.add(LrOneItem.create(pA1, 1, (Terminal) null));
       closure = cf.apply(graph, inputItems);
       assertEquals("[A = a .A, [null], A = .a A, [null], A = .b, [null]]", closure.toString());
 
       // A = a .A, a, b
       inputItems = new LinkedHashSet<>();
-      inputItems.add(newLrOneItem(pA1, 1, tA, tB));
+      inputItems.add(LrOneItem.create(pA1, 1, tA, tB));
       closure = cf.apply(graph, inputItems);
       assertEquals("[A = a .A, [a, b], A = .a A, [a, b], A = .b, [a, b]]", closure.toString());
 
       // A = a A., a, b
       inputItems = new LinkedHashSet<>();
-      inputItems.add(newLrOneItem(pA1, 2, tA, tB));
+      inputItems.add(LrOneItem.create(pA1, 2, tA, tB));
       closure = cf.apply(graph, inputItems);
       assertEquals("[A = a A., [a, b]]", closure.toString());
 
       // A = b., $
       inputItems = new LinkedHashSet<>();
-      inputItems.add(newLrOneItem(pA2, 1, (Terminal) null));
+      inputItems.add(LrOneItem.create(pA2, 1, (Terminal) null));
       closure = cf.apply(graph, inputItems);
       assertEquals("[A = b., [null]]", closure.toString());
 
       // A = b., a, b
       inputItems = new LinkedHashSet<>();
-      inputItems.add(newLrOneItem(pA2, 1, tA, tB));
+      inputItems.add(LrOneItem.create(pA2, 1, tA, tB));
       closure = cf.apply(graph, inputItems);
       assertEquals("[A = b., [a, b]]", closure.toString());
-   }
-
-   private static LrOneItem newLrOneItem(Production production, int dot, Terminal... lookahead) {
-      return newLrOneItem(new LrZeroItem(production, dot), lookahead);
-   }
-
-   private static LrOneItem newLrOneItem(LrZeroItem zItem, Terminal... lookahead) {
-      final Set<Terminal> lookaheadSet = new LinkedHashSet<>();
-      for (Terminal terminal : lookahead) {
-         lookaheadSet.add(terminal);
-      }
-      return new LrOneItem(zItem, lookaheadSet);
    }
 
    @Test
@@ -181,8 +169,8 @@ public class LrOneClosureFunctionTest {
       Set<LrOneItem> closure;
 
       inputItems = new LinkedHashSet<>();
-      inputItems.add(newLrOneItem(pS1, 0, (Terminal) null));
-      inputItems.add(newLrOneItem(pS2, 0, (Terminal) null));
+      inputItems.add(LrOneItem.create(pS1, 0, (Terminal) null));
+      inputItems.add(LrOneItem.create(pS2, 0, (Terminal) null));
       closure = cf.apply(graph, inputItems);
       assertEquals("[S = .A b, [null], S = .A c, [null], A = .a, [b, c]]", closure.toString());
    }
@@ -238,8 +226,8 @@ public class LrOneClosureFunctionTest {
       Set<LrOneItem> closure;
 
       inputItems = new LinkedHashSet<>();
-      inputItems.add(newLrOneItem(pS1, 0, (Terminal) null));
-      inputItems.add(newLrOneItem(pS2, 0, (Terminal) null));
+      inputItems.add(LrOneItem.create(pS1, 0, (Terminal) null));
+      inputItems.add(LrOneItem.create(pS2, 0, (Terminal) null));
       closure = cf.apply(graph, inputItems);
       assertEquals(
          "[S = .A, [null], S = .A s, [null], A = .B, [null, s], B = .b, [null, s, c, d], A = .a, [null, s], A = .B c, [null, s], A = .B d, [null, s]]",
