@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package org.sourcepit.lalr.core.grammar.graph;
+package org.sourcepit.lalr.core.lr;
 
-import static org.sourcepit.lalr.core.grammar.graph.ParserActionType.REDUCE;
+import static org.sourcepit.lalr.core.lr.ParserActionType.SHIFT;
 
-public class Reduce<P> extends AbstractParserAction<P> {
-   private final P production;
+public class Shift<P> extends AbstractParserAction<P> {
+   private final int nextState;
 
-   public Reduce(P production) {
-      super(REDUCE);
-      this.production = production;
+   public Shift(int nextState) {
+      super(SHIFT);
+      this.nextState = nextState;
    }
    
    @Override
-   public Reduce<P> asReduce() {
+   public Shift<P> asShift() {
       return this;
    }
 
-   public P getProduction() {
-      return production;
+   public int getNextState() {
+      return nextState;
    }
 }

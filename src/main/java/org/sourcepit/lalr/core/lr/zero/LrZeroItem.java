@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.sourcepit.lalr.core.grammar.graph;
+package org.sourcepit.lalr.core.lr.zero;
 
 import org.sourcepit.lalr.core.grammar.AbstractSymbol;
 import org.sourcepit.lalr.core.grammar.Production;

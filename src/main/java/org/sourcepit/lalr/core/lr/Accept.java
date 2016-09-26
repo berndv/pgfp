@@ -14,26 +14,19 @@
  * limitations under the License.
  */
 
-package org.sourcepit.lalr.core.grammar.graph;
+package org.sourcepit.lalr.core.lr;
 
-import org.sourcepit.lalr.core.grammar.Grammar;
-import org.sourcepit.lalr.core.grammar.Terminal;
-import org.sourcepit.lalr.core.grammar.Variable;
+import static org.sourcepit.lalr.core.lr.ParserActionType.ACCEPT;
 
-public interface ParsingTableBuilder {
+public class Accept<P> extends AbstractParserAction<P> {
 
-   void startTable(Grammar grammar, int states);
-
-   void startState(int state);
-
-   void shift(Terminal terminal, int targetState);
-
-   void reduce(Terminal terminal, int production);
-
-   void jump(Variable variable, int targetState);
-
-   void endState(int state);
-
-   void endTable(Grammar grammar, int states);
+   public Accept() {
+      super(ACCEPT);
+   }
+   
+   @Override
+   public Accept<P> asAccept() {
+      return this;
+   }
 
 }

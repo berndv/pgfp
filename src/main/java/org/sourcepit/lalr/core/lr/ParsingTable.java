@@ -14,24 +14,10 @@
  * limitations under the License.
  */
 
-package org.sourcepit.lalr.core.grammar.graph;
+package org.sourcepit.lalr.core.lr;
 
-import static org.sourcepit.lalr.core.grammar.graph.ParserActionType.SHIFT;
+public interface ParsingTable<T, P> {
+   AbstractParserAction<P> getAction(int state, T token);
 
-public class Shift<P> extends AbstractParserAction<P> {
-   private final int nextState;
-
-   public Shift(int nextState) {
-      super(SHIFT);
-      this.nextState = nextState;
-   }
-   
-   @Override
-   public Shift<P> asShift() {
-      return this;
-   }
-
-   public int getNextState() {
-      return nextState;
-   }
+   int getGoto(int state, P production);
 }

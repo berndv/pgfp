@@ -14,27 +14,7 @@
  * limitations under the License.
  */
 
-package org.sourcepit.lalr.core.grammar.graph;
-public abstract class AbstractParserAction<P> {
-   private final ParserActionType actionType;
-
-   public AbstractParserAction(ParserActionType actionType) {
-      this.actionType = actionType;
-   }
-
-   public ParserActionType getType() {
-      return actionType;
-   }
-
-   public Shift<P> asShift() {
-      throw new ClassCastException();
-   }
-   
-   public Reduce<P> asReduce() {
-      throw new ClassCastException();
-   }
-   
-   public Accept<P> asAccept() {
-      throw new ClassCastException();
-   }
+package org.sourcepit.lalr.core.lr;
+public enum ParserActionType {
+   SHIFT, REDUCE, ACCEPT;
 }

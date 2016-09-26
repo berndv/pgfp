@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.sourcepit.lalr.core.grammar.graph;
+package org.sourcepit.lalr.core.lr.one;
 
 import static org.junit.Assert.assertEquals;
 
@@ -31,6 +31,11 @@ import org.sourcepit.lalr.core.grammar.SimpleSyntax;
 import org.sourcepit.lalr.core.grammar.Syntax;
 import org.sourcepit.lalr.core.grammar.Terminal;
 import org.sourcepit.lalr.core.grammar.Variable;
+import org.sourcepit.lalr.core.grammar.graph.DetermineFollowGrammarGraphVisitor;
+import org.sourcepit.lalr.core.grammar.graph.DetermineNullableGrammarGraphVisitor;
+import org.sourcepit.lalr.core.grammar.graph.GrammarGraph;
+import org.sourcepit.lalr.core.lr.one.LrOneClosureFunction;
+import org.sourcepit.lalr.core.lr.one.LrOneItem;
 
 public class LrOneClosureFunctionTest {
    private final Syntax syntax = new SimpleSyntax();

@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package org.sourcepit.lalr.core.grammar.graph;
+package org.sourcepit.lalr.core.lr.zero;
 
 import java.util.List;
 
 import org.sourcepit.lalr.core.grammar.Grammar;
 import org.sourcepit.lalr.core.grammar.Terminal;
 import org.sourcepit.lalr.core.grammar.Variable;
+import org.sourcepit.lalr.core.lr.ParsingTableBuilder;
 
 public class LrZeroParsingTable {
    public void build(Grammar grammar, ParsingTableBuilder tblb) {

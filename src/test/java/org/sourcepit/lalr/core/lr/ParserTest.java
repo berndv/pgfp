@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package org.sourcepit.lalr.core.grammar.graph;
+package org.sourcepit.lalr.core.lr;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,6 +30,7 @@ import org.sourcepit.lalr.core.grammar.Production;
 import org.sourcepit.lalr.core.grammar.SimpleSyntax;
 import org.sourcepit.lalr.core.grammar.Syntax;
 import org.sourcepit.lalr.core.grammar.Terminal;
+import org.sourcepit.lalr.core.lr.zero.LrZeroParsingTable;
 
 public class ParserTest {
 

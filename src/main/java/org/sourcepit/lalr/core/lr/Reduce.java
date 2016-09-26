@@ -14,7 +14,24 @@
  * limitations under the License.
  */
 
-package org.sourcepit.lalr.core.grammar.graph;
-public enum ParserActionType {
-   SHIFT, REDUCE, ACCEPT;
+package org.sourcepit.lalr.core.lr;
+
+import static org.sourcepit.lalr.core.lr.ParserActionType.REDUCE;
+
+public class Reduce<P> extends AbstractParserAction<P> {
+   private final P production;
+
+   public Reduce(P production) {
+      super(REDUCE);
+      this.production = production;
+   }
+   
+   @Override
+   public Reduce<P> asReduce() {
+      return this;
+   }
+
+   public P getProduction() {
+      return production;
+   }
 }

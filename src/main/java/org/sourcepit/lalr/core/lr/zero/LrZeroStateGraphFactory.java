@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.sourcepit.lalr.core.grammar.graph;
+package org.sourcepit.lalr.core.lr.zero;
 
 import java.util.ArrayList;
 import java.util.Collections;

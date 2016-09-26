@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.sourcepit.lalr.core.grammar.graph;
+package org.sourcepit.lalr.core.lr.one;
 
 import static org.apache.commons.lang.Validate.notNull;
 
@@ -33,6 +33,9 @@ import org.sourcepit.lalr.core.grammar.Grammar;
 import org.sourcepit.lalr.core.grammar.Production;
 import org.sourcepit.lalr.core.grammar.Terminal;
 import org.sourcepit.lalr.core.grammar.Variable;
+import org.sourcepit.lalr.core.grammar.graph.GrammarGraph;
+import org.sourcepit.lalr.core.grammar.graph.VariableNode;
+import org.sourcepit.lalr.core.lr.zero.LrZeroItem;
 
 public class LrOneClosureFunction implements BiFunction<GrammarGraph, Set<LrOneItem>, Set<LrOneItem>> {
 

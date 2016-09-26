@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.sourcepit.lalr.core.grammar.graph;
+package org.sourcepit.lalr.core.lr.one;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -22,6 +22,7 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.sourcepit.lalr.core.grammar.Production;
 import org.sourcepit.lalr.core.grammar.Terminal;
+import org.sourcepit.lalr.core.lr.zero.LrZeroItem;
 
 public class LrOneItem {
    private final LrZeroItem lrZeroItem;

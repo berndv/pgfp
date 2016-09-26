@@ -14,9 +14,28 @@
  * limitations under the License.
  */
 
-package org.sourcepit.lalr.core.grammar.graph;
-public interface ParsingTable<T, P> {
-   AbstractParserAction<P> getAction(int state, T token);
+package org.sourcepit.lalr.core.lr;
 
-   int getGoto(int state, P production);
+public abstract class AbstractParserAction<P> {
+   private final ParserActionType actionType;
+
+   public AbstractParserAction(ParserActionType actionType) {
+      this.actionType = actionType;
+   }
+
+   public ParserActionType getType() {
+      return actionType;
+   }
+
+   public Shift<P> asShift() {
+      throw new ClassCastException();
+   }
+   
+   public Reduce<P> asReduce() {
+      throw new ClassCastException();
+   }
+   
+   public Accept<P> asAccept() {
+      throw new ClassCastException();
+   }
 }

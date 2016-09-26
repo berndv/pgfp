@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-package org.sourcepit.lalr.core.grammar.graph;
+package org.sourcepit.lalr.core.lr;
 
 import java.util.Iterator;
 import java.util.Stack;
 
 import org.sourcepit.lalr.core.grammar.Production;
+import org.sourcepit.lalr.core.lr.AbstractParserAction;
+import org.sourcepit.lalr.core.lr.ParsingTable;
+import org.sourcepit.lalr.core.lr.Reduce;
+import org.sourcepit.lalr.core.lr.Shift;
 
 public class Parser<T> {
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.sourcepit.lalr.core.grammar.graph;
+package org.sourcepit.lalr.core.lr.one;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -25,6 +25,8 @@ import java.util.function.BiFunction;
 
 import org.sourcepit.lalr.core.grammar.AbstractSymbol;
 import org.sourcepit.lalr.core.grammar.Terminal;
+import org.sourcepit.lalr.core.grammar.graph.GrammarGraph;
+import org.sourcepit.lalr.core.lr.zero.LrZeroItem;
 
 public class LrOneGotoFunction
    implements

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.sourcepit.lalr.core.grammar.graph;
+package org.sourcepit.lalr.core.lr.zero;
 
 import static org.junit.Assert.assertEquals;
 
@@ -28,6 +28,8 @@ import org.sourcepit.lalr.core.grammar.Production;
 import org.sourcepit.lalr.core.grammar.SimpleSyntax;
 import org.sourcepit.lalr.core.grammar.Syntax;
 import org.sourcepit.lalr.core.grammar.Variable;
+import org.sourcepit.lalr.core.lr.zero.LrZeroClosureFunction;
+import org.sourcepit.lalr.core.lr.zero.LrZeroItem;
 
 public class LrZeroClosureFunctionTest {
 
