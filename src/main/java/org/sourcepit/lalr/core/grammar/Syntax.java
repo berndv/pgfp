@@ -30,4 +30,6 @@ public interface Syntax {
    AbstractSymbol parseSymbol(String str) throws IllegalArgumentException;
 
    Production parseProduction(String str) throws IllegalArgumentException;
+
+   Variable derivedVariable(Variable startSymbol, String string);
 }

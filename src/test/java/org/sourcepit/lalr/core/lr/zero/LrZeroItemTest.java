@@ -44,7 +44,7 @@ public class LrZeroItemTest {
       productions.add(syntax.parseProduction("A = a A"));
       productions.add(syntax.parseProduction("A = "));
 
-      Grammar grammar = new Grammar(productions);
+      Grammar grammar = new Grammar(syntax, productions);
 
       Variable s = grammar.getVariable("S");
       Variable a = grammar.getVariable("A");

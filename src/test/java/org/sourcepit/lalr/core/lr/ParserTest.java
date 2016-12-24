@@ -44,7 +44,7 @@ public class ParserTest {
       productions.add(syntax.parseProduction("A = a A"));
       productions.add(syntax.parseProduction("A = b"));
 
-      Grammar grammar = new Grammar(productions);
+      Grammar grammar = new Grammar(syntax, productions);
 
       ShortTableBuilder tblb = new ShortTableBuilder();
       new LrZeroParsingTable().build(grammar, tblb);

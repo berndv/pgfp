@@ -30,6 +30,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class Grammar {
+
+   private final Syntax syntax;
+
    private final List<Variable> variables;
 
    private final List<Terminal> terminals;
@@ -40,11 +43,12 @@ public class Grammar {
 
    private final Variable startSymbol;
 
-   public Grammar(List<Production> productions) {
-      this(productions, productions.get(0).getLeftSide());
+   public Grammar(Syntax syntax, List<Production> productions) {
+      this(syntax, productions, productions.get(0).getLeftSide());
    }
 
-   public Grammar(List<Production> productions, Variable startSymbol) {
+   public Grammar(Syntax syntax, List<Production> productions, Variable startSymbol) {
+      notNull(syntax);
       notEmpty(productions);
       noDupliatedElements(productions);
 
@@ -81,13 +85,21 @@ public class Grammar {
 
       allVariables.removeAll(variables);
       isTrue(allVariables.isEmpty(), "Grammar contains undefined variables: " + allVariables);
+      
+      // HACK
+      terminals.add(syntax.getEofTerminal());
 
+      this.syntax = syntax;
       this.variables = unmodifiableList(new ArrayList<>(variables));
       this.terminals = unmodifiableList(new ArrayList<>(terminals));
       this.productions = productions;
       this.variableToProductions = toUnmodifiableProductionsMap(variableToProductions);
       notNull(startSymbol);
       this.startSymbol = startSymbol;
+   }
+
+   public Syntax getSyntax() {
+      return syntax;
    }
 
    private static Map<Variable, List<Production>> toUnmodifiableProductionsMap(

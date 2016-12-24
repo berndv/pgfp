@@ -39,6 +39,11 @@ public class SimpleSyntax implements Syntax {
    }
 
    @Override
+   public Variable derivedVariable(Variable variable, String name) {
+      return createVariable(variable.toString() + "$" + name);
+   }
+
+   @Override
    public Terminal createTerminal(String name) throws IllegalArgumentException {
       return (Terminal) createSymbol(TERMINAL, name);
    }
@@ -107,7 +112,7 @@ public class SimpleSyntax implements Syntax {
       }
 
       codePoints.forEachRemaining((int cp) -> {
-         isTrue(Character.isUnicodeIdentifierPart(cp), "Symbol '%s' contains invlaid char '%s'", name,
+         isTrue(Character.isUnicodeIdentifierPart(cp) || cp == '$', "Symbol '%s' contains invlaid char '%s'", name,
             String.valueOf(Character.toChars(cp)));
       });
 

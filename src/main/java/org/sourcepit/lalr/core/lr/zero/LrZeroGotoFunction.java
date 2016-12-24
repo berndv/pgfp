@@ -19,6 +19,7 @@ package org.sourcepit.lalr.core.lr.zero;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.BiFunction;
 
@@ -27,34 +28,38 @@ import org.sourcepit.lalr.core.grammar.Grammar;
 
 public class LrZeroGotoFunction implements BiFunction<Grammar, Set<LrZeroItem>, Map<AbstractSymbol, Set<LrZeroItem>>> {
 
-   private final BiFunction<Grammar, LrZeroItem, Set<LrZeroItem>> closureFunction;
+   private final BiFunction<Grammar, Set<LrZeroItem>, Set<LrZeroItem>> closureFunction;
 
-   public LrZeroGotoFunction(BiFunction<Grammar, LrZeroItem, Set<LrZeroItem>> closureFunction) {
+   public LrZeroGotoFunction(BiFunction<Grammar, Set<LrZeroItem>, Set<LrZeroItem>> closureFunction) {
       this.closureFunction = closureFunction;
    }
-   
-   public BiFunction<Grammar, LrZeroItem, Set<LrZeroItem>> getClosureFunction() {
+
+   public BiFunction<Grammar, Set<LrZeroItem>, Set<LrZeroItem>> getClosureFunction() {
       return closureFunction;
    }
 
    @Override
    public Map<AbstractSymbol, Set<LrZeroItem>> apply(Grammar grammar, Set<LrZeroItem> closure) {
-      Map<AbstractSymbol, Set<LrZeroItem>> gotos = new LinkedHashMap<>();
+      final Map<AbstractSymbol, Set<LrZeroItem>> symbolGotoClosure = new LinkedHashMap<>();
+      apply(grammar, symbolGotoClosure, closure);
+      return symbolGotoClosure;
+   }
+
+   private void apply(Grammar grammar, Map<AbstractSymbol, Set<LrZeroItem>> symbolToTargetClosure,
+      Set<LrZeroItem> closure) {
       for (LrZeroItem item : closure) {
          if (!item.isFinal()) {
             final AbstractSymbol symbol = item.getExpectedSymbol();
-
-            Set<LrZeroItem> gotoClosure = gotos.get(symbol);
-            if (gotoClosure == null) {
-               gotoClosure = new LinkedHashSet<>();
-               gotos.put(symbol, gotoClosure);
+            Set<LrZeroItem> targetClosure = symbolToTargetClosure.get(symbol);
+            if (targetClosure == null) {
+               targetClosure = new LinkedHashSet<>();
+               symbolToTargetClosure.put(symbol, targetClosure);
             }
-
-            LrZeroItem lrZeroItem = new LrZeroItem(item.getProduction(), item.getDot() + 1);
-            gotoClosure.addAll(closureFunction.apply(grammar, lrZeroItem));
+            targetClosure.add(new LrZeroItem(item.getProduction(), item.getDot() + 1));
          }
       }
-      return gotos;
+      for (Entry<AbstractSymbol, Set<LrZeroItem>> entry : symbolToTargetClosure.entrySet()) {
+         symbolToTargetClosure.put(entry.getKey(), closureFunction.apply(grammar, entry.getValue()));
+      }
    }
-
 }

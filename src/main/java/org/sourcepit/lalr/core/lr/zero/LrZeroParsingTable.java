@@ -17,24 +17,37 @@
 package org.sourcepit.lalr.core.lr.zero;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import org.sourcepit.lalr.core.grammar.AbstractSymbol;
 import org.sourcepit.lalr.core.grammar.Grammar;
 import org.sourcepit.lalr.core.grammar.Terminal;
 import org.sourcepit.lalr.core.grammar.Variable;
+import org.sourcepit.lalr.core.lr.LrStateGraph;
 import org.sourcepit.lalr.core.lr.ParsingTableBuilder;
 
 public class LrZeroParsingTable {
    public void build(Grammar grammar, ParsingTableBuilder tblb) {
-      List<LrZeroState> states = new LrZeroStateGraphFactory().create(grammar);
+      final LrStateGraph<LrZeroItem> stateGraph = new LrZeroStateGraphFactory().createStateGraph(grammar);
+
+      final List<Set<LrZeroItem>> states = stateGraph.getStates();
+      final List<Map<AbstractSymbol, Integer>> transitions = stateGraph.getTransitions();
+
       tblb.startTable(grammar, states.size());
-      for (LrZeroState state : states) {
-         tblb.startState(state.getId());
+
+      for (int i = 0; i < states.size(); i++) {
+         tblb.startState(i);
+
+         final Set<LrZeroItem> currentState = states.get(i);
+         final Map<AbstractSymbol, Integer> currentTransitions = transitions.get(i);
+
          for (Terminal terminal : grammar.getTerminals()) {
-            LrZeroState target = state.getTransitions().get(terminal);
+            Integer target = currentTransitions.get(terminal);
             if (target != null) {
-               tblb.shift(terminal, target.getId());
+               tblb.shift(terminal, target);
             }
-            for (LrZeroItem item : state.getClosure()) {
+            for (LrZeroItem item : currentState) {
                if (item.isFinal()) {
                   if (!item.getProduction().getLeftSide().toString().equals("<start>")) {
                      int production = grammar.getProductions().indexOf(item.getProduction());
@@ -43,20 +56,20 @@ public class LrZeroParsingTable {
                }
             }
          }
-         for (LrZeroItem item : state.getClosure()) {
+         for (LrZeroItem item : currentState) {
             if (item.isFinal()) {
                int production = grammar.getProductions().indexOf(item.getProduction());
                tblb.reduce(null, production);
             }
          }
          for (Variable variable : grammar.getVariables()) {
-            LrZeroState target = state.getTransitions().get(variable);
+            Integer target = currentTransitions.get(variable);
             if (target != null) {
-               tblb.jump(variable, target.getId());
+               tblb.jump(variable, target);
             }
          }
 
-         tblb.endState(state.getId());
+         tblb.endState(i);
       }
       tblb.endTable(grammar, states.size());
    }

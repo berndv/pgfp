@@ -31,7 +31,7 @@ public class GrammarGraphTest {
    private final Syntax syntax = new SimpleSyntax();
 
    private GrammarGraph newGrammarGraph(List<Production> productions) {
-      return new GrammarGraph(new Grammar(productions));
+      return new GrammarGraph(new Grammar(syntax, productions));
    }
 
    @Test

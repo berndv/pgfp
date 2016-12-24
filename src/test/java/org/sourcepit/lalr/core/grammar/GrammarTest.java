@@ -29,24 +29,11 @@ public class GrammarTest {
    private final Syntax syntax = new SimpleSyntax();
 
    @Test
-   public void test() throws Exception {
-
-      List<Production> productions = new ArrayList<>();
-      productions.add(syntax.parseProduction("S = E F"));
-      productions.add(syntax.parseProduction("E = e"));
-      productions.add(syntax.parseProduction("F = f"));
-      productions.add(syntax.parseProduction("E = ε"));
-
-      System.out.println(new Grammar(productions));
-
-   }
-
-   @Test
    public void testUndefinedVariable() throws Exception {
       List<Production> productions = new ArrayList<Production>();
       productions.add(syntax.parseProduction("S = E"));
       try {
-         new Grammar(productions);
+         new Grammar(syntax, productions);
          fail();
       }
       catch (IllegalArgumentException e) {
@@ -59,7 +46,7 @@ public class GrammarTest {
       List<Production> productions = new ArrayList<Production>();
       productions.add(syntax.parseProduction("S = \u03B5"));
       try {
-         new Grammar(productions, syntax.createVariable("F"));
+         new Grammar(syntax, productions, syntax.createVariable("F"));
          fail();
       }
       catch (IllegalArgumentException e) {

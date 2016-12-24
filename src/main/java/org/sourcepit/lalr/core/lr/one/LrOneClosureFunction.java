@@ -25,9 +25,12 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.BiFunction;
 
+import org.apache.commons.lang.Validate;
+import org.omg.CosNaming.IstringHelper;
 import org.sourcepit.lalr.core.grammar.AbstractSymbol;
 import org.sourcepit.lalr.core.grammar.Grammar;
 import org.sourcepit.lalr.core.grammar.Production;
@@ -61,11 +64,11 @@ public class LrOneClosureFunction implements BiFunction<GrammarGraph, Set<LrOneI
       Collections.sort(allItems, new Comparator<LrZeroItem>() {
          @Override
          public int compare(LrZeroItem o1, LrZeroItem o2) {
-            if (zeroItemToOrigins.get(o1).contains(o2)) {
-               return 1;
-            }
-            if (zeroItemToOrigins.get(o2).contains(o1)) {
+            if (isOriginOf(zeroItemToOrigins, o1, o2)) {
                return -1;
+            }
+            if (isOriginOf(zeroItemToOrigins, o2, o1)) {
+               return 1;
             }
             return 0;
          }
@@ -79,18 +82,61 @@ public class LrOneClosureFunction implements BiFunction<GrammarGraph, Set<LrOneI
       return closure;
    }
 
+   private static boolean isOriginOf(Map<LrZeroItem, Set<LrZeroItem>> zeroItemToOrigins, LrZeroItem o1, LrZeroItem o2) {
+      final Set<LrZeroItem> origins = zeroItemToOrigins.get(o2);
+      if (origins.contains(o1)) {
+         return true;
+      }
+      for (LrZeroItem origin : origins) {
+         if (origin != null && isOriginOf(zeroItemToOrigins, origin, o1)) {
+            return true;
+         }
+      }
+      return false;
+
+   }
+
    private Set<Terminal> getLookahead(GrammarGraph graph, Map<LrZeroItem, Set<Terminal>> zeroItemToLookahead,
       Map<LrZeroItem, Set<LrZeroItem>> zeroItemToOrigins, LrZeroItem zItem) {
       Set<Terminal> lookahead = zeroItemToLookahead.get(zItem);
       if (lookahead == null) {
          lookahead = new LinkedHashSet<>();
          for (LrZeroItem origin : zeroItemToOrigins.get(zItem)) {
-            if (origin == null) {
-               lookahead.addAll(zeroItemToLookahead.get(origin));
+            Validate.notNull(origin);
+            Validate.isTrue(zItem.getProduction().getLeftSide().equals(origin.getExpectedSymbol()));
+
+            boolean nullable = true;
+
+            final List<AbstractSymbol> originRightSide = origin.getProduction().getRightSide();
+            for (int i = origin.getDot() + 1; i < originRightSide.size(); i++) {
+               AbstractSymbol symbol = originRightSide.get(i);
+
+               if (symbol instanceof Terminal) {
+                  lookahead.add((Terminal) symbol);
+                  nullable = false;
+                  break;
+               }
+               else {
+                  final VariableNode node = graph.getVariableNode((Variable) symbol);
+                  final Set<Terminal> nodeFirst = node.getFirstSet();
+
+                  Set<Terminal> tmp = new LinkedHashSet<>(nodeFirst);
+                  tmp.remove(null);
+
+                  lookahead.addAll(tmp);
+
+                  if (!node.isNullable()) {
+                     nullable = false;
+                     break;
+                  }
+               }
             }
-            else {
-               final AbstractSymbol firstOfFirst = getSymbolAfterExpectedSymbol(origin);
-               lookahead.addAll(first(graph, firstOfFirst, zeroItemToLookahead, origin));
+
+            if (nullable) {
+               final Set<Terminal> lookaheadOfOrigin = zeroItemToLookahead.get(origin);
+               Set<Terminal> tmp = new LinkedHashSet<>(lookaheadOfOrigin);
+               tmp.remove(null);
+               lookahead.addAll(tmp);
             }
          }
          zeroItemToLookahead.put(zItem, lookahead);

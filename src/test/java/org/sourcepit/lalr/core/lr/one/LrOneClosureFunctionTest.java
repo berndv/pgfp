@@ -34,24 +34,56 @@ import org.sourcepit.lalr.core.grammar.Variable;
 import org.sourcepit.lalr.core.grammar.graph.DetermineFollowGrammarGraphVisitor;
 import org.sourcepit.lalr.core.grammar.graph.DetermineNullableGrammarGraphVisitor;
 import org.sourcepit.lalr.core.grammar.graph.GrammarGraph;
-import org.sourcepit.lalr.core.lr.one.LrOneClosureFunction;
-import org.sourcepit.lalr.core.lr.one.LrOneItem;
 
 public class LrOneClosureFunctionTest {
    private final Syntax syntax = new SimpleSyntax();
 
    private GrammarGraph newGrammarGraph(List<Production> productions) {
-      final GrammarGraph graph = new GrammarGraph(new Grammar(productions));
+      final GrammarGraph graph = new GrammarGraph(new Grammar(syntax, productions));
       graph.accept(new DetermineNullableGrammarGraphVisitor());
       final DetermineFollowGrammarGraphVisitor firstAndFollow = new DetermineFollowGrammarGraphVisitor();
       graph.accept(firstAndFollow);
       for (Entry<Variable, Set<Terminal>> entry : firstAndFollow.getSymbolToFirst().entrySet()) {
          graph.getVariableNode(entry.getKey()).setFirstSet(entry.getValue());
       }
-      for (Entry<Variable, Set<Terminal>> entry : firstAndFollow.getSymbolToFollow().entrySet()) {
-         graph.getVariableNode(entry.getKey()).setFollowSet(entry.getValue());
-      }
+      // for (Entry<Variable, Set<Terminal>> entry : firstAndFollow.getSymbolToFollow().entrySet()) {
+      // graph.getVariableNode(entry.getKey()).setFollowSet(entry.getValue());
+      // }
       return graph;
+   }
+
+   @Test
+   public void testEmptyWord() throws Exception {
+      List<Production> productions = new ArrayList<>();
+      productions.add(syntax.parseProduction("S = A"));
+      productions.add(syntax.parseProduction("A = a"));
+      productions.add(syntax.parseProduction("A = "));
+
+      GrammarGraph graph = newGrammarGraph(productions);
+      Grammar grammar = graph.getGrammar();
+
+      Terminal tA = grammar.getTerminals().get(0);
+      assertEquals("a", tA.toString());
+
+      Variable vS = grammar.getVariable("S");
+      Variable vA = grammar.getVariable("A");
+
+      Production pS = grammar.getProductions(vS).get(0);
+      Production pA1 = grammar.getProductions(vA).get(0);
+      Production pA2 = grammar.getProductions(vA).get(1);
+
+      LrOneClosureFunction cf = new LrOneClosureFunction();
+
+      final Terminal eof = syntax.getEofTerminal();
+
+      Set<LrOneItem> inputItems;
+      Set<LrOneItem> closure;
+
+      // S = .A, $
+      inputItems = new LinkedHashSet<>();
+      inputItems.add(LrOneItem.create(pS, 0, eof));
+      closure = cf.apply(graph, inputItems);
+      assertEquals("[S = .A, [$], A = ., [$], A = .a, [$]]", closure.toString());
    }
 
    @Test
@@ -91,7 +123,7 @@ public class LrOneClosureFunctionTest {
       inputItems = new LinkedHashSet<>();
       inputItems.add(LrOneItem.create(pStart, 0, eof));
       closure = cf.apply(graph, inputItems);
-      assertEquals("[START = .S, [$], S = .A A, [$], A = .a A, [a, b], A = .b, [a, b]]", closure.toString());
+      assertEquals("[START = .S, [$], S = .A A, [$], A = .b, [a, b], A = .a A, [a, b]]", closure.toString());
 
       // START = S., $
       inputItems = new LinkedHashSet<>();
@@ -103,7 +135,7 @@ public class LrOneClosureFunctionTest {
       inputItems = new LinkedHashSet<>();
       inputItems.add(LrOneItem.create(pS, 1, eof));
       closure = cf.apply(graph, inputItems);
-      assertEquals("[S = A .A, [$], A = .a A, [$], A = .b, [$]]", closure.toString());
+      assertEquals("[S = A .A, [$], A = .b, [$], A = .a A, [$]]", closure.toString());
 
       // S = A A., $
       inputItems = new LinkedHashSet<>();
@@ -115,13 +147,13 @@ public class LrOneClosureFunctionTest {
       inputItems = new LinkedHashSet<>();
       inputItems.add(LrOneItem.create(pA1, 1, eof));
       closure = cf.apply(graph, inputItems);
-      assertEquals("[A = a .A, [$], A = .a A, [$], A = .b, [$]]", closure.toString());
+      assertEquals("[A = a .A, [$], A = .b, [$], A = .a A, [$]]", closure.toString());
 
       // A = a .A, a, b
       inputItems = new LinkedHashSet<>();
       inputItems.add(LrOneItem.create(pA1, 1, tA, tB));
       closure = cf.apply(graph, inputItems);
-      assertEquals("[A = a .A, [a, b], A = .a A, [a, b], A = .b, [a, b]]", closure.toString());
+      assertEquals("[A = a .A, [a, b], A = .b, [a, b], A = .a A, [a, b]]", closure.toString());
 
       // A = a A., a, b
       inputItems = new LinkedHashSet<>();
@@ -241,8 +273,9 @@ public class LrOneClosureFunctionTest {
       inputItems.add(LrOneItem.create(pS2, 0, eof));
       closure = cf.apply(graph, inputItems);
       assertEquals(
-         "[S = .A, [$], S = .A s, [$], A = .B, [$, s], B = .b, [$, s, c, d], A = .a, [$, s], A = .B c, [$, s], A = .B d, [$, s]]",
+         "[S = .A, [$], S = .A s, [$], A = .B d, [$, s], A = .B c, [$, s], A = .a, [$, s], A = .B, [$, s], B = .b, [$, s, c, d]]",
          closure.toString());
+
    }
 
 }

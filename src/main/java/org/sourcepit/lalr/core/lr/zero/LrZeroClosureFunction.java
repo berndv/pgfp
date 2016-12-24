@@ -25,24 +25,35 @@ import org.sourcepit.lalr.core.grammar.Grammar;
 import org.sourcepit.lalr.core.grammar.Production;
 import org.sourcepit.lalr.core.grammar.Variable;
 
-public class LrZeroClosureFunction implements BiFunction<Grammar, LrZeroItem, Set<LrZeroItem>> {
+public class LrZeroClosureFunction implements BiFunction<Grammar, Set<LrZeroItem>, Set<LrZeroItem>> {
 
    @Override
-   public Set<LrZeroItem> apply(Grammar grammar, LrZeroItem item) {
+   public Set<LrZeroItem> apply(Grammar grammar, Set<LrZeroItem> startItems) {
       final LinkedHashSet<LrZeroItem> closure = new LinkedHashSet<>();
-      closure(grammar, closure, item);
+      closure(grammar, closure, startItems);
       return closure;
    }
 
-   private void closure(Grammar grammar, Set<LrZeroItem> closure, LrZeroItem item) {
-      if (closure.add(item) && !item.isFinal()) {
-         final AbstractSymbol symbol = item.getExpectedSymbol();
-         if (symbol instanceof Variable) {
-            final Variable variable = (Variable) symbol;
-            for (Production production : grammar.getProductions(variable)) {
-               closure(grammar, closure, new LrZeroItem(production, 0));
+   private void closure(Grammar grammar, Set<LrZeroItem> closure, Set<LrZeroItem> items) {
+      final Set<LrZeroItem> newItems = new LinkedHashSet<>();
+      for (LrZeroItem item : items) {
+         if (closure.add(item)) {
+            if (!item.isFinal()) {
+               final AbstractSymbol symbol = item.getExpectedSymbol();
+               if (symbol instanceof Variable) {
+                  final Variable variable = (Variable) symbol;
+                  for (Production production : grammar.getProductions(variable)) {
+                     final LrZeroItem newItem = new LrZeroItem(production, 0);
+                     if (!closure.contains(newItem)) {
+                        newItems.add(newItem);
+                     }
+                  }
+               }
             }
          }
+      }
+      if (!newItems.isEmpty()) {
+         closure(grammar, closure, newItems);
       }
    }
 }

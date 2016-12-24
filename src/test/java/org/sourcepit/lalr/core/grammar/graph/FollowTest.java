@@ -38,7 +38,7 @@ public class FollowTest {
    private final Syntax syntax = new SimpleSyntax();
 
    private GrammarGraph newGrammarGraph(List<Production> productions) {
-      final GrammarGraph graph = new GrammarGraph(new Grammar(productions));
+      final GrammarGraph graph = new GrammarGraph(new Grammar(syntax, productions));
       graph.accept(new DetermineNullableGrammarGraphVisitor());
       return graph;
    }

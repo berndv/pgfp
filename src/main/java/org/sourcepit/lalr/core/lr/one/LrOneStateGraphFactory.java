@@ -14,24 +14,27 @@
  * limitations under the License.
  */
 
-package org.sourcepit.lalr.core.lr.zero;
+package org.sourcepit.lalr.core.lr.one;
 
 import org.sourcepit.lalr.core.grammar.Grammar;
 import org.sourcepit.lalr.core.grammar.Production;
+import org.sourcepit.lalr.core.grammar.graph.GrammarGraph;
 import org.sourcepit.lalr.core.lr.AbstractLrStateGraphFactory;
 
-public class LrZeroStateGraphFactory extends AbstractLrStateGraphFactory<Grammar, LrZeroItem> {
-   public LrZeroStateGraphFactory() {
-      super(new LrZeroClosureFunction(), new LrZeroGotoFunction(new LrZeroClosureFunction()));
+public class LrOneStateGraphFactory extends AbstractLrStateGraphFactory<GrammarGraph, LrOneItem> {
+
+   public LrOneStateGraphFactory() {
+      super(new LrOneClosureFunction(), new LrOneGotoFunction(new LrOneClosureFunction()));
    }
 
    @Override
-   protected Grammar getGrammar(Grammar grammar) {
-      return grammar;
+   protected Grammar getGrammar(GrammarGraph context) {
+      return context.getGrammar();
    }
 
    @Override
-   protected LrZeroItem newStartItem(Grammar context, Production startProduction) {
-      return new LrZeroItem(startProduction, 0);
+   protected LrOneItem newStartItem(GrammarGraph context, Production startProduction) {
+      return LrOneItem.create(startProduction, 0, context.getGrammar().getSyntax().getEofTerminal());
    }
+
 }

@@ -24,6 +24,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.Map.Entry;
 
 import org.junit.Test;
@@ -37,6 +38,7 @@ import org.sourcepit.lalr.core.grammar.Variable;
 import org.sourcepit.lalr.core.grammar.graph.DetermineFollowGrammarGraphVisitor;
 import org.sourcepit.lalr.core.grammar.graph.DetermineNullableGrammarGraphVisitor;
 import org.sourcepit.lalr.core.grammar.graph.GrammarGraph;
+import org.sourcepit.lalr.core.lr.LrStateGraph;
 import org.sourcepit.lalr.core.lr.one.LrOneClosureFunction;
 import org.sourcepit.lalr.core.lr.one.LrOneGotoFunction;
 import org.sourcepit.lalr.core.lr.one.LrOneItem;
@@ -46,7 +48,7 @@ public class LrOneGotoFunctionTest {
    private final Syntax syntax = new SimpleSyntax();
 
    private GrammarGraph newGrammarGraph(List<Production> productions) {
-      final GrammarGraph graph = new GrammarGraph(new Grammar(productions));
+      final GrammarGraph graph = new GrammarGraph(new Grammar(syntax, productions));
       graph.accept(new DetermineNullableGrammarGraphVisitor());
       final DetermineFollowGrammarGraphVisitor firstAndFollow = new DetermineFollowGrammarGraphVisitor();
       graph.accept(firstAndFollow);
@@ -57,6 +59,52 @@ public class LrOneGotoFunctionTest {
          graph.getVariableNode(entry.getKey()).setFollowSet(entry.getValue());
       }
       return graph;
+   }
+   
+   @Test
+   public void testEmptyWord() throws Exception {
+      List<Production> productions = new ArrayList<>();
+      productions.add(syntax.parseProduction("S = A"));
+      productions.add(syntax.parseProduction("A = a"));
+      productions.add(syntax.parseProduction("A = "));
+      
+      GrammarGraph graph = newGrammarGraph(productions);
+      Grammar grammar = graph.getGrammar();
+
+      Terminal tA = grammar.getTerminals().get(0);
+      assertEquals("a", tA.toString());
+
+      Variable vS = grammar.getVariable("S");
+      Variable vA = grammar.getVariable("A");
+
+      Production pS = grammar.getProductions(vS).get(0);
+      Production pA1 = grammar.getProductions(vA).get(0);
+      Production pA2 = grammar.getProductions(vA).get(1);
+
+      LrOneGotoFunction gotoFunction = new LrOneGotoFunction(new LrOneClosureFunction());
+
+      final Terminal eof = syntax.getEofTerminal();
+
+      Set<LrOneItem> inputItems;
+      Set<LrOneItem> closure;
+
+      // S = .A, $
+      inputItems = new LinkedHashSet<>();
+      inputItems.add(LrOneItem.create(pS, 0, eof));
+      
+      BiFunction<GrammarGraph, Set<LrOneItem>, Set<LrOneItem>> closureFunction = gotoFunction.getClosureFunction();
+      
+      Set<LrOneItem> startClosure = closureFunction.apply(graph, inputItems);
+      assertEquals("[S = .A, [$], A = .a, [$], A = ., [$]]", startClosure.toString());
+      
+      Map<AbstractSymbol, Set<LrOneItem>> symbolGotoClosure = gotoFunction.apply(graph, startClosure);
+      assertEquals(2, symbolGotoClosure.size());
+      
+      closure = symbolGotoClosure.get(vA);
+      assertEquals("[S = A., [$]]", closure.toString());
+      
+      closure = symbolGotoClosure.get(tA);
+      assertEquals("[A = a., [$]]", closure.toString());
    }
 
    @Test
@@ -105,6 +153,10 @@ public class LrOneGotoFunctionTest {
       transitions.add(new LinkedHashMap<>());
 
       foo(graph, gotoFunction, states, transitions, stateZero);
+
+      LrOneStateGraphFactory stateGraphFactory = new LrOneStateGraphFactory();
+      
+      LrStateGraph<LrOneItem> stateGraph = stateGraphFactory.createStateGraph(graph);
 
 
       System.out.println();
